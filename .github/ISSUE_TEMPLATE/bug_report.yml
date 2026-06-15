@@ -41,6 +41,31 @@ body:
       placeholder: "Windows 11 / macOS / Linux"
     validations:
       required: true
+  - type: textarea
+    id: command
+    attributes:
+      label: command
+      description: Paste the exact CLI command or minimal Python call.
+      placeholder: "aquote-router realtime 000001 --json"
+    validations:
+      required: true
+  - type: input
+    id: api_name
+    attributes:
+      label: API name
+      placeholder: "realtime_quotes / minute_kline / daily_kline / kline"
+    validations:
+      required: true
+  - type: input
+    id: symbol
+    attributes:
+      label: symbol
+      placeholder: "000001"
+  - type: input
+    id: period_count
+    attributes:
+      label: period/count
+      placeholder: "period=15m, count=120; write N/A if not kline"
   - type: input
     id: trace_id
     attributes:
@@ -56,5 +81,10 @@ body:
   - type: textarea
     id: audit
     attributes:
-      label: Audit snippet
+      label: Sanitized audit log snippet
       description: Paste relevant sanitized JSONL or SQLite fields if available.
+  - type: textarea
+    id: probe_pytdx
+    attributes:
+      label: probe-pytdx output
+      description: Required for K-line timeout reports; write N/A for unrelated bugs.

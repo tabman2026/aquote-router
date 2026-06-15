@@ -62,8 +62,8 @@ body:
   - type: textarea
     id: audit_jsonl
     attributes:
-      label: Sanitized audit JSONL snippet
-      description: Paste only related fields after removing private values.
+      label: Sanitized audit log snippet
+      description: Paste related JSONL or SQLite audit fields after removing private values.
     validations:
       required: true
   - type: textarea
@@ -71,6 +71,13 @@ body:
     attributes:
       label: diagnose --json output
       description: Paste sanitized output from aquote-router diagnose --json. Do not include token, cookie, secret, account data, or private paths.
+    validations:
+      required: true
+  - type: textarea
+    id: probe_pytdx
+    attributes:
+      label: probe-pytdx output
+      description: For K-line issues, run aquote-router probe-pytdx --json --output config/pytdx_servers.active.local.json and paste sanitized output. For non-K-line issues, write N/A.
     validations:
       required: true
   - type: dropdown

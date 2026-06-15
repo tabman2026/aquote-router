@@ -1,9 +1,79 @@
 # aquote-router
 
-`aquote-router` is a lightweight A-share quote source router for research tooling.
-It routes provider calls, records source attempts, and returns normalized Python
-dataclasses. It is infrastructure only: it does not provide investment advice,
-order execution, account login, screening, timing signals, or performance claims.
+[![PyPI version](https://img.shields.io/pypi/v/aquote-router.svg)](https://pypi.org/project/aquote-router/)
+[![Python versions](https://img.shields.io/pypi/pyversions/aquote-router.svg)](https://pypi.org/project/aquote-router/)
+[![CI](https://github.com/tabman2026/aquote-router/actions/workflows/ci.yml/badge.svg)](https://github.com/tabman2026/aquote-router/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![GitHub Release](https://img.shields.io/github/v/release/tabman2026/aquote-router?display_name=tag)](https://github.com/tabman2026/aquote-router/releases)
+
+`aquote-router` is a lightweight Python router for A-share quote sources. It
+normalizes realtime quote and K-line calls, records which source was tried, and
+returns auditable dataclasses for research tooling.
+
+It solves a practical maintenance problem: public upstream quote libraries can
+fail by source, network, region, or time. The router centralizes source policy,
+pytdx failover, easyquotation realtime fallback, `trace_id`, and audit logs.
+
+Boundary: this project is data access infrastructure only. It does not provide investment advice,
+account login, order execution, screening, timing signals, or performance claims.
+
+Start here: [docs/NEW_USER_START_HERE.md](docs/NEW_USER_START_HERE.md)
+
+Data source policy: [docs/DATA_SOURCES.md](docs/DATA_SOURCES.md)
+
+Issue guide: [docs/ISSUE_GUIDE.md](docs/ISSUE_GUIDE.md)
+
+Examples: [realtime](examples/realtime_quotes_demo.py),
+[15m K-line](examples/minute_kline_15m_demo.py), and
+[daily K-line](examples/daily_kline_demo.py)
+
+## Install
+
+```bash
+python -X utf8 -m pip install aquote-router
+```
+
+## Minimal Realtime Quote
+
+```python
+from aquote_router import QuoteRouter
+
+router = QuoteRouter.from_config(
+    pytdx_servers_path="config/pytdx_servers.example.json",
+    source_policy_path="config/source_policy.example.yaml",
+    audit_jsonl_path="logs/aquote_router_audit.jsonl",
+    audit_sqlite_path="logs/aquote_router_audit.sqlite3",
+)
+
+records = router.realtime_quotes(["000001"])
+print(records[0].to_dict())
+```
+
+## Minimal 15m K-line
+
+```python
+bars = router.minute_kline("000001", period="15m", count=120)
+print(bars[0].to_dict())
+```
+
+## K-line Timeout Check
+
+K-line APIs are pytdx-only. If a K-line call times out, first probe the pytdx
+server pool for the current network:
+
+```bash
+aquote-router probe-pytdx --json --output config/pytdx_servers.active.local.json
+```
+
+Then pass the active local pool explicitly:
+
+```bash
+aquote-router kline 000001 --period 15m --count 10 \
+  --pytdx-servers config/pytdx_servers.active.local.json --json
+```
+
+`config/pytdx_servers.active.local.json` is a local diagnostic result and should
+not be committed.
 
 ## Features
 
@@ -18,12 +88,6 @@ order execution, account login, screening, timing signals, or performance claims
 - JSONL and SQLite audit logs record attempts, `fallback_chain`,
   `selected_source`, duration, record count, and final error details.
 - The default test suite is offline. Live smoke checks require explicit opt-in.
-
-## Install
-
-```bash
-python -X utf8 -m pip install aquote-router
-```
 
 Local development:
 
@@ -129,9 +193,11 @@ after pytdx failures, but K-line APIs do not use easyquotation fallback.
 ## Core Docs
 
 - [Quickstart](docs/QUICKSTART.md)
+- [Start here](docs/NEW_USER_START_HERE.md)
 - [API reference](docs/API_REFERENCE.md)
 - [K-line guide](docs/KLINE_GUIDE.md)
 - [Data sources](docs/DATA_SOURCES.md)
+- [Issue guide](docs/ISSUE_GUIDE.md)
 - [Return fields](docs/RETURN_FIELDS.md)
 - [CLI reference](docs/CLI_REFERENCE.md)
 - [Troubleshooting](docs/TROUBLESHOOTING.md)
@@ -144,6 +210,7 @@ after pytdx failures, but K-line APIs do not use easyquotation fallback.
 - [Upstream license and risk](docs/UPSTREAM_LICENSE_AND_RISK.md)
 - [Roadmap](docs/ROADMAP.md)
 - [Contributor adapter guide](docs/CONTRIBUTOR_ADAPTER_GUIDE.md)
+- [Maintainer checklist](docs/MAINTAINER_CHECKLIST.md)
 
 ## Audit Trail
 

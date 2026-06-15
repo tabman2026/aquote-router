@@ -21,6 +21,21 @@ def test_issue_templates_request_trace_and_diagnose_json() -> None:
         path.read_text(encoding="utf-8") for path in TEMPLATE_DIR.glob("*.yml")
     )
 
+    for field in [
+        "aquote-router version",
+        "Python version",
+        "Operating system",
+        "command",
+        "API name",
+        "symbol",
+        "period/count",
+        "trace_id",
+        "diagnose --json output",
+        "probe-pytdx output",
+        "Sanitized audit log snippet",
+    ]:
+        assert field in combined
+
     assert "trace_id" in combined
     assert "diagnose --json" in combined
 
@@ -37,8 +52,9 @@ def test_data_source_failure_template_has_required_fields() -> None:
         "API name",
         "period / count",
         "trace_id",
-        "Sanitized audit JSONL snippet",
+        "Sanitized audit log snippet",
         "diagnose --json output",
+        "probe-pytdx output",
         "outside trading hours",
         "Can you reproduce it?",
     ]:
