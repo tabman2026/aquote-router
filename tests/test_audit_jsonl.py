@@ -54,6 +54,17 @@ def _policy() -> SourcePolicy:
                 "minute_kline": {
                     "allow_fallback": False,
                     "fallback_order": ["pytdx"],
+                    "supported_periods": ["1m", "5m", "15m", "30m", "60m"],
+                },
+                "daily_kline": {
+                    "allow_fallback": False,
+                    "fallback_order": ["pytdx"],
+                    "supported_periods": ["1d"],
+                },
+                "kline": {
+                    "allow_fallback": False,
+                    "fallback_order": ["pytdx"],
+                    "supported_periods": ["1m", "5m", "15m", "30m", "60m", "1d"],
                 },
             }
         }

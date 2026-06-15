@@ -7,14 +7,29 @@ import uuid
 from pathlib import Path
 from typing import Any
 
-from aquote_router.adapters.base import BaseQuoteAdapter, source_id
+from aquote_router.adapters.base import BaseQuoteAdapter, code_for_symbol, source_id
 from aquote_router.adapters.easyquotation_sina_adapter import EasyQuotationSinaAdapter
 from aquote_router.adapters.easyquotation_tencent_adapter import EasyQuotationTencentAdapter
 from aquote_router.adapters.pytdx_adapter import PytdxAdapter
 from aquote_router.audit import AuditLogger
-from aquote_router.exceptions import ConfigurationError, NoAvailableSourceError
-from aquote_router.models import AuditAttempt, AuditRecord, QuoteRecord, utc_now_iso
-from aquote_router.policy import SourcePolicy, load_pytdx_servers, load_source_policy
+from aquote_router.exceptions import (
+    ConfigurationError,
+    ErrorCode,
+    NoAvailableSourceError,
+    UnsupportedPeriodError,
+)
+from aquote_router.models import AuditAttempt, AuditRecord, KlineBar, QuoteRecord, utc_now_iso
+from aquote_router.policy import (
+    SUPPORTED_DAILY_KLINE_PERIODS,
+    SUPPORTED_KLINE_PERIODS,
+    SUPPORTED_MINUTE_KLINE_PERIODS,
+    SourcePolicy,
+    load_pytdx_servers,
+    load_source_policy,
+)
+
+DAILY_KLINE_ALIASES = {"1d", "daily", "day"}
+KLINE_APIS = {"minute_kline", "daily_kline", "kline"}
 
 
 class QuoteRouter:
@@ -88,9 +103,39 @@ class QuoteRouter:
         period: str = "1m",
         count: int = 240,
         include_raw: bool = False,
-    ) -> list[QuoteRecord]:
+    ) -> list[KlineBar]:
         return self._route_quotes(
             "minute_kline",
+            [symbol],
+            period=period,
+            count=count,
+            include_raw=include_raw,
+        )
+
+    def daily_kline(
+        self,
+        symbol: str,
+        *,
+        count: int = 120,
+        include_raw: bool = False,
+    ) -> list[KlineBar]:
+        return self._route_quotes(
+            "daily_kline",
+            [symbol],
+            count=count,
+            include_raw=include_raw,
+        )
+
+    def kline(
+        self,
+        symbol: str,
+        *,
+        period: str = "1m",
+        count: int = 120,
+        include_raw: bool = False,
+    ) -> list[KlineBar]:
+        return self._route_quotes(
+            "kline",
             [symbol],
             period=period,
             count=count,
@@ -125,7 +170,7 @@ class QuoteRouter:
         api_name: str,
         symbols: list[str],
         **kwargs: Any,
-    ) -> list[QuoteRecord]:
+    ) -> list[QuoteRecord] | list[KlineBar]:
         trace_id = uuid.uuid4().hex
         call_started_at = utc_now_iso()
         call_started = time.perf_counter()
@@ -135,9 +180,13 @@ class QuoteRouter:
         last_error: BaseException | None = None
 
         try:
+            self._validate_request(api_name, symbols, **kwargs)
             adapters = self._adapters_for_api(api_name)
             if not adapters:
-                raise ConfigurationError(f"no enabled source for {api_name}")
+                raise ConfigurationError(
+                    f"no enabled source for {api_name}",
+                    code=ErrorCode.SOURCE_POLICY_BLOCKED,
+                )
 
             for adapter in adapters:
                 adapter_source_id = source_id(adapter.source, adapter.source_level)
@@ -204,7 +253,10 @@ class QuoteRouter:
             message = f"all configured sources failed for {api_name}"
             if last_error:
                 message = f"{message}: {last_error.__class__.__name__}: {last_error}"
-            error = NoAvailableSourceError(message)
+            error_code = ErrorCode.FALLBACK_EXHAUSTED
+            if attempts and all(attempt.source == "pytdx" for attempt in attempts):
+                error_code = ErrorCode.PYTDX_ALL_SERVERS_FAILED
+            error = NoAvailableSourceError(message, code=error_code)
             self._write_audit(
                 trace_id=trace_id,
                 api_name=api_name,
@@ -236,9 +288,27 @@ class QuoteRouter:
                 and self.easyquotation_tencent_adapter
             ):
                 adapters.append(self.easyquotation_tencent_adapter)
-        if api_name == "minute_kline":
+        if api_name in KLINE_APIS:
             return [adapter for adapter in adapters if adapter.source == "pytdx"]
         return adapters
+
+    def _validate_request(self, api_name: str, symbols: list[str], **kwargs: Any) -> None:
+        for symbol in symbols:
+            code_for_symbol(symbol)
+        if api_name == "minute_kline":
+            period = str(kwargs.get("period", "1m"))
+            if period not in SUPPORTED_MINUTE_KLINE_PERIODS:
+                supported = ", ".join(SUPPORTED_MINUTE_KLINE_PERIODS)
+                raise UnsupportedPeriodError(
+                    f"unsupported pytdx minute period: {period}; supported: {supported}"
+                )
+        if api_name == "kline":
+            period = str(kwargs.get("period", "1m"))
+            if self._normalize_kline_period(period) not in SUPPORTED_KLINE_PERIODS:
+                supported = ", ".join(SUPPORTED_KLINE_PERIODS)
+                raise UnsupportedPeriodError(
+                    f"unsupported pytdx kline period: {period}; supported: {supported}"
+                )
 
     def _call_adapter(
         self,
@@ -246,7 +316,7 @@ class QuoteRouter:
         adapter: BaseQuoteAdapter,
         symbols: list[str],
         **kwargs: Any,
-    ) -> list[QuoteRecord]:
+    ) -> list[QuoteRecord] | list[KlineBar]:
         if api_name == "minute_kline":
             period = str(kwargs.get("period", "1m"))
             count = int(kwargs.get("count", 240))
@@ -257,8 +327,43 @@ class QuoteRouter:
                 count=count,
                 include_raw=include_raw,
             )
+        if api_name == "daily_kline":
+            count = int(kwargs.get("count", 120))
+            include_raw = bool(kwargs.get("include_raw", False))
+            return adapter.daily_kline(
+                symbols[0],
+                count=count,
+                include_raw=include_raw,
+            )
+        if api_name == "kline":
+            period = self._normalize_kline_period(str(kwargs.get("period", "1m")))
+            count = int(kwargs.get("count", 120))
+            include_raw = bool(kwargs.get("include_raw", False))
+            if period in SUPPORTED_MINUTE_KLINE_PERIODS:
+                return adapter.minute_kline(
+                    symbols[0],
+                    period=period,
+                    count=count,
+                    include_raw=include_raw,
+                )
+            if period in SUPPORTED_DAILY_KLINE_PERIODS:
+                return adapter.daily_kline(
+                    symbols[0],
+                    count=count,
+                    include_raw=include_raw,
+                )
+            supported = ", ".join(SUPPORTED_KLINE_PERIODS)
+            raise UnsupportedPeriodError(
+                f"unsupported pytdx kline period: {period}; supported: {supported}"
+            )
         method = getattr(adapter, api_name)
         return method(symbols, include_raw=bool(kwargs.get("include_raw", False)))
+
+    def _normalize_kline_period(self, period: str) -> str:
+        normalized = period.lower()
+        if normalized in DAILY_KLINE_ALIASES:
+            return "1d"
+        return normalized
 
     def _write_audit(
         self,

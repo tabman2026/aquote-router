@@ -5,7 +5,6 @@ import subprocess
 import sys
 from pathlib import Path
 
-
 ROOT = Path(__file__).resolve().parents[1]
 
 
@@ -20,10 +19,12 @@ def test_release_scan_has_no_violations() -> None:
     assert module.collect_violations(ROOT) == []
 
 
-def test_readme_contains_required_disclaimer() -> None:
+def test_readme_contains_required_boundary() -> None:
     readme = (ROOT / "README.md").read_text(encoding="utf-8")
 
-    assert "本项目不提供投资建议，不生成候选股池，不生成买卖点，不接入真实交易。" in readme
+    assert "does not provide investment advice" in readme
+    assert "does not produce market data" in readme
+    assert "K-line APIs never fall back to easyquotation" in readme
 
 
 def test_pyproject_package_names() -> None:

@@ -1,5 +1,5 @@
 name: Adapter request
-description: Request support for a new data source adapter
+description: Request support for a new quote source adapter
 title: "[Adapter]: "
 labels: ["adapter"]
 body:
@@ -7,22 +7,46 @@ body:
     id: source
     attributes:
       label: Source
-      description: Name the provider and public API documentation.
+      description: Name the provider, public docs, and package dependency if any.
+    validations:
+      required: true
+  - type: textarea
+    id: license
+    attributes:
+      label: Upstream license and usage limits
+      description: Link to upstream license or terms if available.
+    validations:
+      required: true
+  - type: textarea
+    id: apis
+    attributes:
+      label: API coverage
+      description: Which aquote-router APIs should this adapter support?
+      placeholder: "realtime_quotes, full_realtime_quotes, index_realtime, minute_kline"
     validations:
       required: true
   - type: textarea
     id: fields
     attributes:
-      label: Fields
-      description: Map provider fields to QuoteRecord fields.
+      label: Field mapping
+      description: Map provider fields to QuoteRecord fields and list unknown units.
     validations:
       required: true
-  - type: checkboxes
-    id: tests
+  - type: textarea
+    id: diagnostics
     attributes:
-      label: Tests
+      label: diagnose --json output
+      description: Paste sanitized output if this request comes from a failed local experiment.
+  - type: checkboxes
+    id: requirements
+    attributes:
+      label: Requirements
       options:
         - label: Adapter unit tests can be written without live network access.
           required: true
         - label: Field normalization tests can be written with fixture data.
+          required: true
+        - label: Source policy behavior can be tested offline.
+          required: true
+        - label: Documentation updates will include DATA_SOURCES.md and RETURN_FIELDS.md.
           required: true

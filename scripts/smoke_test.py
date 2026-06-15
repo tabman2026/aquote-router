@@ -12,10 +12,10 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-from aquote_router.policy import load_pytdx_servers, load_source_policy
-
 
 def main() -> int:
+    from aquote_router.policy import load_pytdx_servers, load_source_policy
+
     policy = load_source_policy(ROOT / "config" / "source_policy.example.yaml")
     servers = load_pytdx_servers(ROOT / "config" / "pytdx_servers.example.json")
 

@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.2.0 - 2026-06-15
+
+- Added `daily_kline`.
+- Added unified `kline`.
+- Documented all supported minute K-line periods including `15m`.
+- Added `DATA_SOURCES`, `API_REFERENCE`, `KLINE_GUIDE`, `RETURN_FIELDS`, and `CLI_REFERENCE`.
+- Added troubleshooting, error code, symbol, time, unit, upstream risk, roadmap and adapter contributor docs.
+- Added stable error codes and enhanced `aquote-router diagnose --json`.
+- Added issue templates for bug reports, data source failures, adapter requests and documentation issues.
+- Added offline tests for open-source maintenance and diagnostics workflows.
+
 ## 0.1.0 - 2026-06-14
 
 - Initial open-source release.

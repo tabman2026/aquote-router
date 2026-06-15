@@ -1,30 +1,95 @@
 name: Data source failure
-description: Report a quote source failure or fallback issue
+description: Report a quote source failure, empty response, or fallback issue
 title: "[Source failure]: "
 labels: ["source-failure"]
 body:
   - type: input
-    id: api
+    id: version
     attributes:
-      label: API name
-      placeholder: realtime_quotes
+      label: aquote-router version
+      placeholder: "0.2.0"
+    validations:
+      required: true
+  - type: input
+    id: python_version
+    attributes:
+      label: Python version
+      placeholder: "3.12.0"
+    validations:
+      required: true
+  - type: input
+    id: os
+    attributes:
+      label: Operating system
+      placeholder: "Windows 11 / macOS / Linux"
+    validations:
+      required: true
+  - type: textarea
+    id: command
+    attributes:
+      label: Executed command
+      placeholder: "aquote-router realtime 000001"
     validations:
       required: true
   - type: input
     id: symbols
     attributes:
-      label: Symbols
-      placeholder: "000001,600000"
+      label: Stock symbol
+      placeholder: "000001"
+    validations:
+      required: true
+  - type: input
+    id: api
+    attributes:
+      label: API name
+      placeholder: "realtime_quotes"
+    validations:
+      required: true
+  - type: input
+    id: kline_args
+    attributes:
+      label: period / count for kline
+      placeholder: "period=1m, count=240; write N/A if not kline"
     validations:
       required: true
   - type: input
     id: trace_id
     attributes:
-      label: Trace id
+      label: trace_id
+      description: Required when audit output exists.
     validations:
       required: true
   - type: textarea
-    id: attempts
+    id: audit_jsonl
     attributes:
-      label: Attempts
-      description: Paste sanitized attempt fields from JSONL or SQLite audit.
+      label: Sanitized audit JSONL snippet
+      description: Paste only related fields after removing private values.
+    validations:
+      required: true
+  - type: textarea
+    id: diagnose_json
+    attributes:
+      label: diagnose --json output
+      description: Paste sanitized output from aquote-router diagnose --json. Do not include token, cookie, secret, account data, or private paths.
+    validations:
+      required: true
+  - type: dropdown
+    id: non_trading_time
+    attributes:
+      label: Did this happen outside trading hours?
+      options:
+        - "No"
+        - "Yes"
+        - "Unknown"
+    validations:
+      required: true
+  - type: dropdown
+    id: reproducible
+    attributes:
+      label: Can you reproduce it?
+      options:
+        - "Yes, every time"
+        - "Sometimes"
+        - "No"
+    validations:
+      required: true

@@ -8,7 +8,7 @@ from pathlib import Path
 from typing import Any
 
 from aquote_router.adapters.base import PytdxServer
-from aquote_router.exceptions import ConfigurationError, SourcePolicyError
+from aquote_router.exceptions import ConfigurationError, ErrorCode, SourcePolicyError
 
 ROLE_ORDER = {"primary": 0, "hot_backup": 1, "backup": 2}
 SUPPORTED_APIS = {
@@ -16,7 +16,12 @@ SUPPORTED_APIS = {
     "full_realtime_quotes",
     "index_realtime",
     "minute_kline",
+    "daily_kline",
+    "kline",
 }
+SUPPORTED_MINUTE_KLINE_PERIODS = ("1m", "5m", "15m", "30m", "60m")
+SUPPORTED_DAILY_KLINE_PERIODS = ("1d",)
+SUPPORTED_KLINE_PERIODS = SUPPORTED_MINUTE_KLINE_PERIODS + SUPPORTED_DAILY_KLINE_PERIODS
 SUPPORTED_SOURCES = {"pytdx", "easyquotation_sina", "easyquotation_tencent"}
 
 
@@ -26,6 +31,7 @@ class ApiPolicy:
 
     allow_fallback: bool
     fallback_order: list[str]
+    supported_periods: list[str] | None = None
 
 
 @dataclass(frozen=True)
@@ -60,15 +66,34 @@ class SourcePolicy:
             apis[api_name] = ApiPolicy(
                 allow_fallback=bool(raw_policy.get("allow_fallback", False)),
                 fallback_order=[str(source) for source in fallback_order],
+                supported_periods=_optional_str_list(raw_policy.get("supported_periods")),
             )
 
         missing = sorted(SUPPORTED_APIS - set(apis))
         if missing:
             raise SourcePolicyError(f"missing API policy: {missing[0]}")
-        if apis["minute_kline"].fallback_order != ["pytdx"]:
-            raise SourcePolicyError("minute_kline must be pytdx-only")
-        if apis["minute_kline"].allow_fallback:
-            raise SourcePolicyError("minute_kline must disable cross-source fallback")
+        for api_name in ("minute_kline", "daily_kline", "kline"):
+            if apis[api_name].fallback_order != ["pytdx"]:
+                raise SourcePolicyError(f"{api_name} must be pytdx-only")
+            if apis[api_name].allow_fallback:
+                raise SourcePolicyError(
+                    f"{api_name} must disable cross-source fallback"
+                )
+        _validate_supported_periods(
+            "minute_kline",
+            apis["minute_kline"].supported_periods,
+            SUPPORTED_MINUTE_KLINE_PERIODS,
+        )
+        _validate_supported_periods(
+            "daily_kline",
+            apis["daily_kline"].supported_periods,
+            SUPPORTED_DAILY_KLINE_PERIODS,
+        )
+        _validate_supported_periods(
+            "kline",
+            apis["kline"].supported_periods,
+            SUPPORTED_KLINE_PERIODS,
+        )
         return cls(apis=apis)
 
     def api(self, api_name: str) -> ApiPolicy:
@@ -90,23 +115,43 @@ def load_pytdx_servers(path: str | Path) -> list[PytdxServer]:
 
     config_path = Path(path)
     if not config_path.exists():
-        raise ConfigurationError("pytdx server config file was not found")
+        raise ConfigurationError(
+            "pytdx server config file was not found",
+            code=ErrorCode.CONFIG_NOT_FOUND,
+        )
 
     try:
         raw = json.loads(config_path.read_text(encoding="utf-8"))
     except json.JSONDecodeError as exc:
-        raise ConfigurationError("pytdx server config is not valid JSON") from exc
+        raise ConfigurationError(
+            "pytdx server config is not valid JSON",
+            code=ErrorCode.CONFIG_PARSE_FAILED,
+        ) from exc
+    except OSError as exc:
+        raise ConfigurationError(
+            "pytdx server config could not be read",
+            code=ErrorCode.CONFIG_PARSE_FAILED,
+        ) from exc
 
     if not isinstance(raw, list):
-        raise ConfigurationError("pytdx server config must be a JSON list")
+        raise ConfigurationError(
+            "pytdx server config must be a JSON list",
+            code=ErrorCode.CONFIG_PARSE_FAILED,
+        )
 
     servers: list[PytdxServer] = []
     for item in raw:
         if not isinstance(item, dict):
-            raise ConfigurationError("pytdx server entry must be an object")
+            raise ConfigurationError(
+                "pytdx server entry must be an object",
+                code=ErrorCode.CONFIG_PARSE_FAILED,
+            )
         role = str(item.get("role", "backup"))
         if role not in ROLE_ORDER:
-            raise ConfigurationError(f"unsupported pytdx server role: {role}")
+            raise ConfigurationError(
+                f"unsupported pytdx server role: {role}",
+                code=ErrorCode.CONFIG_PARSE_FAILED,
+            )
         enabled = bool(item.get("enabled", True))
         if not enabled:
             continue
@@ -121,22 +166,40 @@ def load_pytdx_servers(path: str | Path) -> list[PytdxServer]:
                 )
             )
         except (KeyError, TypeError, ValueError) as exc:
-            raise ConfigurationError("invalid pytdx server entry") from exc
+            raise ConfigurationError(
+                "invalid pytdx server entry",
+                code=ErrorCode.CONFIG_PARSE_FAILED,
+            ) from exc
 
     return sorted(servers, key=lambda server: (ROLE_ORDER[server.role], server.latency_ms))
 
 
 def _load_yaml(path: Path) -> dict[str, Any]:
     if not path.exists():
-        raise ConfigurationError("source policy file was not found")
+        raise ConfigurationError(
+            "source policy file was not found",
+            code=ErrorCode.SOURCE_POLICY_NOT_FOUND,
+        )
 
-    text = path.read_text(encoding="utf-8")
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError as exc:
+        raise SourcePolicyError(
+            "source policy file could not be read",
+            code=ErrorCode.SOURCE_POLICY_INVALID,
+        ) from exc
     try:
         import yaml
     except Exception:
         return _load_simple_policy_yaml(text)
 
-    data = yaml.safe_load(text)
+    try:
+        data = yaml.safe_load(text)
+    except Exception as exc:
+        raise SourcePolicyError(
+            "source policy YAML could not be parsed",
+            code=ErrorCode.SOURCE_POLICY_INVALID,
+        ) from exc
     if not isinstance(data, dict):
         raise SourcePolicyError("source policy YAML must be a mapping")
     return data
@@ -180,3 +243,25 @@ def _load_simple_policy_yaml(text: str) -> dict[str, Any]:
         raise SourcePolicyError("invalid simple source policy YAML")
 
     return data
+
+
+def _optional_str_list(value: Any) -> list[str] | None:
+    if value is None:
+        return None
+    if not isinstance(value, list):
+        raise SourcePolicyError("supported_periods must be a list when provided")
+    return [str(item) for item in value]
+
+
+def _validate_supported_periods(
+    api_name: str,
+    configured: list[str] | None,
+    expected: tuple[str, ...],
+) -> None:
+    if configured is None:
+        return
+    if tuple(configured) != expected:
+        expected_text = ", ".join(expected)
+        raise SourcePolicyError(
+            f"{api_name} supported_periods must be exactly: {expected_text}"
+        )

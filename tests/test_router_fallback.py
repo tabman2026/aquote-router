@@ -4,7 +4,7 @@ import pytest
 
 from aquote_router.adapters.base import BaseQuoteAdapter
 from aquote_router.exceptions import NoAvailableSourceError, SourceUnavailableError
-from aquote_router.models import QuoteRecord
+from aquote_router.models import KlineBar, QuoteRecord
 from aquote_router.policy import SourcePolicy
 from aquote_router.router import QuoteRouter
 
@@ -48,10 +48,22 @@ class FakeAdapter(BaseQuoteAdapter):
         count: int = 240,
         include_raw: bool = False,
     ):
-        self.calls.append("minute_kline")
+        self.calls.append(f"minute_kline:{period}:{count}")
         if self.fail:
             raise SourceUnavailableError(f"{self.source} failed")
-        return [QuoteRecord(symbol=symbol, price=4.0)]
+        return [KlineBar(symbol=symbol, close=4.0, period=period)]
+
+    def daily_kline(
+        self,
+        symbol: str,
+        *,
+        count: int = 120,
+        include_raw: bool = False,
+    ):
+        self.calls.append(f"daily_kline:{count}")
+        if self.fail:
+            raise SourceUnavailableError(f"{self.source} failed")
+        return [KlineBar(symbol=symbol, close=5.0, period="1d")]
 
 
 def make_policy() -> SourcePolicy:
@@ -85,6 +97,17 @@ def make_policy() -> SourcePolicy:
                 "minute_kline": {
                     "allow_fallback": False,
                     "fallback_order": ["pytdx"],
+                    "supported_periods": ["1m", "5m", "15m", "30m", "60m"],
+                },
+                "daily_kline": {
+                    "allow_fallback": False,
+                    "fallback_order": ["pytdx"],
+                    "supported_periods": ["1d"],
+                },
+                "kline": {
+                    "allow_fallback": False,
+                    "fallback_order": ["pytdx"],
+                    "supported_periods": ["1m", "5m", "15m", "30m", "60m", "1d"],
                 },
             }
         }
@@ -188,5 +211,33 @@ def test_minute_kline_never_uses_easyquotation() -> None:
 
     with pytest.raises(NoAvailableSourceError):
         router.minute_kline("000001", period="1m")
+
+    assert sina.calls == []
+
+
+def test_daily_kline_never_uses_easyquotation() -> None:
+    sina = FakeAdapter("easyquotation_sina")
+    router = make_router(
+        [FakeAdapter("pytdx", "primary", fail=True)],
+        sina=sina,
+        tencent=FakeAdapter("easyquotation_tencent"),
+    )
+
+    with pytest.raises(NoAvailableSourceError):
+        router.daily_kline("000001")
+
+    assert sina.calls == []
+
+
+def test_kline_never_uses_easyquotation() -> None:
+    sina = FakeAdapter("easyquotation_sina")
+    router = make_router(
+        [FakeAdapter("pytdx", "primary", fail=True)],
+        sina=sina,
+        tencent=FakeAdapter("easyquotation_tencent"),
+    )
+
+    with pytest.raises(NoAvailableSourceError):
+        router.kline("000001", period="15m")
 
     assert sina.calls == []

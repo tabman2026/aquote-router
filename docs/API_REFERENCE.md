@@ -1,0 +1,106 @@
+# API Reference
+
+## `QuoteRouter.from_config`
+
+```python
+QuoteRouter.from_config(
+    *,
+    pytdx_servers_path: str | Path,
+    source_policy_path: str | Path,
+    audit_jsonl_path: str | Path | None = None,
+    audit_sqlite_path: str | Path | None = None,
+) -> QuoteRouter
+```
+
+Loads pytdx server config, source policy, realtime adapters, and optional audit
+writers.
+
+## `realtime_quotes`
+
+```python
+router.realtime_quotes(["000001", "600000"], include_raw=False) -> list[QuoteRecord]
+```
+
+Source order: `pytdx -> easyquotation_sina -> easyquotation_tencent`.
+
+## `full_realtime_quotes`
+
+```python
+router.full_realtime_quotes(["000001", "600000"], include_raw=False) -> list[QuoteRecord]
+```
+
+Source order: `pytdx -> easyquotation_sina -> easyquotation_tencent`.
+
+## `index_realtime`
+
+```python
+router.index_realtime(["000001", "399001"], include_raw=False) -> list[QuoteRecord]
+```
+
+Source order: `pytdx -> easyquotation_sina -> easyquotation_tencent`.
+
+## `minute_kline`
+
+```python
+router.minute_kline("000001", period="15m", count=120, include_raw=False) -> list[KlineBar]
+```
+
+Supported periods: `1m`, `5m`, `15m`, `30m`, `60m`.
+Source: `pytdx` only. No easyquotation fallback.
+
+## `daily_kline`
+
+```python
+router.daily_kline("000001", count=120, include_raw=False) -> list[KlineBar]
+```
+
+Supported period: `1d`. Source: `pytdx` only. No easyquotation fallback.
+
+## `kline`
+
+```python
+router.kline("000001", period="1d", count=120, include_raw=False) -> list[KlineBar]
+```
+
+Unified K-line entry point:
+
+- `1m`, `5m`, `15m`, `30m`, `60m` route to pytdx minute bars.
+- `1d`, `daily`, and `day` route to pytdx daily bars.
+- Other periods raise `UnsupportedPeriodError`.
+
+Source: `pytdx` only. No easyquotation fallback.
+
+## `diagnose`
+
+```python
+router.diagnose() -> dict
+```
+
+Returns local router configuration without connecting to upstream providers.
+
+CLI equivalent:
+
+```bash
+aquote-router diagnose --json
+```
+
+## Return Values
+
+Realtime APIs return `QuoteRecord`. K-line APIs return `KlineBar`. Both models
+support `to_dict(include_raw=False)`.
+
+See [RETURN_FIELDS.md](RETURN_FIELDS.md).
+
+## Exceptions
+
+Public exceptions inherit from `QuoteRouterError` and include a stable `code`.
+Common exceptions:
+
+- `ConfigurationError`
+- `SourcePolicyError`
+- `SourceUnavailableError`
+- `NoAvailableSourceError`
+- `UnsupportedSymbolError`
+- `UnsupportedPeriodError`
+
+See [ERROR_CODES.md](ERROR_CODES.md).

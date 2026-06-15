@@ -6,6 +6,7 @@ import json
 import sqlite3
 from pathlib import Path
 
+from aquote_router.exceptions import ErrorCode, QuoteRouterError
 from aquote_router.models import AuditRecord
 
 
@@ -24,10 +25,16 @@ class AuditLogger:
     def log(self, record: AuditRecord) -> None:
         """Persist one audit record to every configured sink."""
 
-        if self.jsonl_path:
-            self._write_jsonl(record)
-        if self.sqlite_path:
-            self._write_sqlite(record)
+        try:
+            if self.jsonl_path:
+                self._write_jsonl(record)
+            if self.sqlite_path:
+                self._write_sqlite(record)
+        except (OSError, sqlite3.Error) as exc:
+            raise QuoteRouterError(
+                "audit record could not be written",
+                code=ErrorCode.AUDIT_WRITE_FAILED,
+            ) from exc
 
     def _write_jsonl(self, record: AuditRecord) -> None:
         assert self.jsonl_path is not None

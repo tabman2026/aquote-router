@@ -1,9 +1,7 @@
-"""Index realtime demo.
-
-Live sources may be unstable. Run only when you accept live network access.
-"""
+"""Index realtime quote demo."""
 
 from aquote_router import QuoteRouter
+from aquote_router.exceptions import QuoteRouterError
 
 
 def main() -> None:
@@ -13,7 +11,11 @@ def main() -> None:
         audit_jsonl_path="logs/aquote_router_audit.jsonl",
         audit_sqlite_path="logs/aquote_router_audit.sqlite3",
     )
-    records = router.index_realtime(["000001", "399001"])
+    try:
+        records = router.index_realtime(["000001", "399001"])
+    except QuoteRouterError as exc:
+        print(f"Source request failed: [{exc.code}] {exc}")
+        return
     for record in records:
         print(record.to_dict())
 

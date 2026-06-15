@@ -14,18 +14,47 @@ body:
     id: reproduce
     attributes:
       label: Reproduction
-      description: Minimal steps and code.
+      description: Minimal commands or Python code.
+      placeholder: |
+        aquote-router diagnose --json
+        aquote-router realtime 000001
     validations:
       required: true
   - type: input
     id: version
     attributes:
-      label: Version
-      placeholder: "0.1.0"
+      label: aquote-router version
+      placeholder: "0.2.0"
+    validations:
+      required: true
+  - type: input
+    id: python_version
+    attributes:
+      label: Python version
+      placeholder: "3.12.0"
+    validations:
+      required: true
+  - type: input
+    id: os
+    attributes:
+      label: Operating system
+      placeholder: "Windows 11 / macOS / Linux"
+    validations:
+      required: true
+  - type: input
+    id: trace_id
+    attributes:
+      label: trace_id
+      description: Paste the trace_id if the bug happened during a quote request.
+  - type: textarea
+    id: diagnose
+    attributes:
+      label: diagnose --json output
+      description: Paste sanitized output from aquote-router diagnose --json. Do not include token, cookie, secret, account data, or private paths.
     validations:
       required: true
   - type: textarea
     id: audit
     attributes:
-      label: Audit trace
-      description: Paste the trace_id and relevant sanitized audit fields.
+      label: Audit snippet
+      description: Paste relevant sanitized JSONL or SQLite fields if available.

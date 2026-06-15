@@ -9,6 +9,7 @@ from typing import Any
 import click
 
 from aquote_router import __version__
+from aquote_router.diagnostics import build_diagnostics
 from aquote_router.exceptions import QuoteRouterError
 from aquote_router.router import QuoteRouter
 
@@ -44,69 +45,145 @@ def main(
 
 
 @main.command()
+@click.option("--json", "diagnose_json_output", is_flag=True)
 @click.pass_obj
-def diagnose(options: dict[str, Any]) -> None:
+def diagnose(options: dict[str, Any], diagnose_json_output: bool) -> None:
     """Show local configuration summary without provider connections."""
 
-    router = _router_from_options(options)
-    _print_payload(router.diagnose(), json_output=options["json_output"])
+    payload = build_diagnostics(
+        source_policy_path=options["source_policy_path"],
+        pytdx_servers_path=options["pytdx_servers_path"],
+        audit_jsonl_path=options["audit_jsonl_path"],
+        audit_sqlite_path=options["audit_sqlite_path"],
+    )
+    _print_payload(
+        payload,
+        json_output=bool(options["json_output"] or diagnose_json_output),
+    )
 
 
 @main.command()
 @click.argument("symbols", nargs=-1, required=True)
+@click.option("--json", "command_json_output", is_flag=True)
 @click.pass_obj
-def realtime(options: dict[str, Any], symbols: tuple[str, ...]) -> None:
+def realtime(
+    options: dict[str, Any],
+    symbols: tuple[str, ...],
+    command_json_output: bool,
+) -> None:
     """Fetch realtime quotes."""
 
     router = _router_from_options(options)
     try:
         records = router.realtime_quotes(list(symbols))
     except QuoteRouterError as exc:
-        raise click.ClickException(str(exc)) from exc
-    _print_records(records, json_output=options["json_output"])
+        raise click.ClickException(_format_error(exc)) from exc
+    _print_records(records, json_output=bool(options["json_output"] or command_json_output))
 
 
-@main.command("full-realtime")
+@main.command("full")
 @click.argument("symbols", nargs=-1, required=True)
+@click.option("--json", "command_json_output", is_flag=True)
 @click.pass_obj
-def full_realtime(options: dict[str, Any], symbols: tuple[str, ...]) -> None:
+def full(
+    options: dict[str, Any],
+    symbols: tuple[str, ...],
+    command_json_output: bool,
+) -> None:
     """Fetch full realtime quotes."""
 
     router = _router_from_options(options)
     try:
         records = router.full_realtime_quotes(list(symbols))
     except QuoteRouterError as exc:
-        raise click.ClickException(str(exc)) from exc
-    _print_records(records, json_output=options["json_output"])
+        raise click.ClickException(_format_error(exc)) from exc
+    _print_records(records, json_output=bool(options["json_output"] or command_json_output))
 
 
 @main.command("index")
 @click.argument("symbols", nargs=-1, required=True)
+@click.option("--json", "command_json_output", is_flag=True)
 @click.pass_obj
-def index_realtime(options: dict[str, Any], symbols: tuple[str, ...]) -> None:
+def index_realtime(
+    options: dict[str, Any],
+    symbols: tuple[str, ...],
+    command_json_output: bool,
+) -> None:
     """Fetch index realtime quotes."""
 
     router = _router_from_options(options)
     try:
         records = router.index_realtime(list(symbols))
     except QuoteRouterError as exc:
-        raise click.ClickException(str(exc)) from exc
-    _print_records(records, json_output=options["json_output"])
+        raise click.ClickException(_format_error(exc)) from exc
+    _print_records(records, json_output=bool(options["json_output"] or command_json_output))
 
 
 @main.command()
 @click.argument("symbol")
 @click.option("--period", default="1m", show_default=True)
+@click.option("--count", default=240, show_default=True, type=int)
+@click.option("--json", "command_json_output", is_flag=True)
 @click.pass_obj
-def minute(options: dict[str, Any], symbol: str, period: str) -> None:
+def minute(
+    options: dict[str, Any],
+    symbol: str,
+    period: str,
+    count: int,
+    command_json_output: bool,
+) -> None:
     """Fetch pytdx-only minute kline records."""
 
     router = _router_from_options(options)
     try:
-        records = router.minute_kline(symbol, period=period)
+        records = router.minute_kline(symbol, period=period, count=count)
     except QuoteRouterError as exc:
-        raise click.ClickException(str(exc)) from exc
-    _print_records(records, json_output=options["json_output"])
+        raise click.ClickException(_format_error(exc)) from exc
+    _print_records(records, json_output=bool(options["json_output"] or command_json_output))
+
+
+@main.command()
+@click.argument("symbol")
+@click.option("--count", default=120, show_default=True, type=int)
+@click.option("--json", "command_json_output", is_flag=True)
+@click.pass_obj
+def daily(
+    options: dict[str, Any],
+    symbol: str,
+    count: int,
+    command_json_output: bool,
+) -> None:
+    """Fetch pytdx-only daily kline records."""
+
+    router = _router_from_options(options)
+    try:
+        records = router.daily_kline(symbol, count=count)
+    except QuoteRouterError as exc:
+        raise click.ClickException(_format_error(exc)) from exc
+    _print_records(records, json_output=bool(options["json_output"] or command_json_output))
+
+
+@main.command()
+@click.argument("symbol")
+@click.option("--period", default="1m", show_default=True)
+@click.option("--count", default=120, show_default=True, type=int)
+@click.option("--json", "command_json_output", is_flag=True)
+@click.pass_obj
+def kline(
+    options: dict[str, Any],
+    symbol: str,
+    period: str,
+    count: int,
+    command_json_output: bool,
+) -> None:
+    """Fetch pytdx-only kline records through the unified API."""
+
+    router = _router_from_options(options)
+    try:
+        records = router.kline(symbol, period=period, count=count)
+    except QuoteRouterError as exc:
+        raise click.ClickException(_format_error(exc)) from exc
+    _print_records(records, json_output=bool(options["json_output"] or command_json_output))
 
 
 def _router_from_options(options: dict[str, Any]) -> QuoteRouter:
@@ -118,7 +195,11 @@ def _router_from_options(options: dict[str, Any]) -> QuoteRouter:
             audit_sqlite_path=options["audit_sqlite_path"],
         )
     except QuoteRouterError as exc:
-        raise click.ClickException(str(exc)) from exc
+        raise click.ClickException(_format_error(exc)) from exc
+
+
+def _format_error(exc: QuoteRouterError) -> str:
+    return f"[{exc.code}] {exc}"
 
 
 def _print_payload(payload: Any, *, json_output: bool) -> None:
@@ -137,7 +218,23 @@ def _print_records(records: list[Any], *, json_output: bool) -> None:
     if json_output:
         click.echo(json.dumps(rows, ensure_ascii=False, indent=2))
         return
-    columns = ["symbol", "name", "price", "datetime", "source", "source_level"]
+    columns = [
+        "symbol",
+        "name",
+        "price",
+        "close",
+        "period",
+        "datetime",
+        "source",
+        "source_level",
+        "trace_id",
+    ]
+    columns = [
+        column
+        for column in columns
+        if any(row.get(column) not in (None, "") for row in rows)
+        or column in {"symbol", "source", "source_level", "trace_id"}
+    ]
     widths = {
         column: max(
             [len(column)]
@@ -152,6 +249,9 @@ def _print_records(records: list[Any], *, json_output: bool) -> None:
         click.echo(
             "  ".join(str(row.get(column, "") or "").ljust(widths[column]) for column in columns)
         )
+
+
+main.add_command(full, "full-realtime")
 
 
 if __name__ == "__main__":

@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "aquote-router"
-version = "0.1.0"
+version = "0.2.0"
 description = "A-share quote source router with pytdx failover, easyquotation fallback and audit trail"
 readme = "README.md"
 requires-python = ">=3.10"
@@ -41,8 +41,8 @@ test = [
 docs = []
 
 [project.urls]
-Homepage = "https://github.com/aquote-router/aquote-router"
-Issues = "https://github.com/aquote-router/aquote-router/issues"
+Homepage = "https://github.com/tabman2026/aquote-router"
+Issues = "https://github.com/tabman2026/aquote-router/issues"
 
 [project.scripts]
 aquote-router = "aquote_router.cli:main"

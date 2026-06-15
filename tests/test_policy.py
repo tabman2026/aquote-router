@@ -16,6 +16,24 @@ def test_source_policy_example_parses() -> None:
     ]
     assert policy.api("minute_kline").allow_fallback is False
     assert policy.api("minute_kline").fallback_order == ["pytdx"]
+    assert policy.api("minute_kline").supported_periods == [
+        "1m",
+        "5m",
+        "15m",
+        "30m",
+        "60m",
+    ]
+    assert policy.api("daily_kline").fallback_order == ["pytdx"]
+    assert policy.api("daily_kline").supported_periods == ["1d"]
+    assert policy.api("kline").fallback_order == ["pytdx"]
+    assert policy.api("kline").supported_periods == [
+        "1m",
+        "5m",
+        "15m",
+        "30m",
+        "60m",
+        "1d",
+    ]
 
 
 def test_pytdx_servers_sorted_by_role_and_latency(tmp_path) -> None:

@@ -1,9 +1,7 @@
-"""Full realtime quote demo.
-
-Live sources may be unstable. Run only when you accept live network access.
-"""
+"""Full realtime quote demo."""
 
 from aquote_router import QuoteRouter
+from aquote_router.exceptions import QuoteRouterError
 
 
 def main() -> None:
@@ -13,7 +11,11 @@ def main() -> None:
         audit_jsonl_path="logs/aquote_router_audit.jsonl",
         audit_sqlite_path="logs/aquote_router_audit.sqlite3",
     )
-    records = router.full_realtime_quotes(["000001", "600000"])
+    try:
+        records = router.full_realtime_quotes(["000001", "600000"])
+    except QuoteRouterError as exc:
+        print(f"Source request failed: [{exc.code}] {exc}")
+        return
     for record in records:
         print(record.to_dict())
 

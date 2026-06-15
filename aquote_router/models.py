@@ -49,6 +49,42 @@ class QuoteRecord:
 
 
 @dataclass
+class KlineBar:
+    """Normalized K-line bar returned by pytdx-only kline APIs."""
+
+    symbol: str
+    datetime: str | None = None
+    open: float | None = None
+    high: float | None = None
+    low: float | None = None
+    close: float | None = None
+    volume: float | None = None
+    amount: float | None = None
+    period: str = "1m"
+    source: str | None = None
+    source_level: str | None = None
+    raw: dict[str, Any] | None = field(default=None, repr=False)
+    fallback_from: str | None = None
+    is_fallback: bool = False
+    error: str | None = None
+    trace_id: str | None = None
+
+    @property
+    def price(self) -> float | None:
+        """Compatibility alias for older callers that read kline close as price."""
+
+        return self.close
+
+    def to_dict(self, *, include_raw: bool = False) -> dict[str, Any]:
+        """Serialize the kline bar, omitting raw payloads by default."""
+
+        data = asdict(self)
+        if not include_raw:
+            data.pop("raw", None)
+        return data
+
+
+@dataclass
 class AuditAttempt:
     """One source attempt inside a routed call."""
 

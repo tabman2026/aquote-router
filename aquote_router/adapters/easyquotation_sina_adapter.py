@@ -4,8 +4,13 @@ from __future__ import annotations
 
 from typing import Any
 
-from aquote_router.adapters.base import BaseQuoteAdapter, as_float, first_value
-from aquote_router.exceptions import AdapterError, SourceUnavailableError
+from aquote_router.adapters.base import (
+    BaseQuoteAdapter,
+    as_float,
+    code_for_symbol,
+    first_value,
+)
+from aquote_router.exceptions import AdapterError, ErrorCode, SourceUnavailableError
 from aquote_router.models import QuoteRecord
 
 
@@ -34,18 +39,25 @@ class EasyQuotationSinaAdapter(BaseQuoteAdapter):
         if not symbols:
             return []
 
+        normalized_symbols = [code_for_symbol(symbol) for symbol in symbols]
         quotation = self._quotation()
-        data = quotation.stocks(symbols)
+        data = quotation.stocks(normalized_symbols)
         if not data:
-            raise SourceUnavailableError(f"{self.source} returned no quote records")
+            raise SourceUnavailableError(
+                f"{self.source} returned no quote records",
+                code=_source_error_code(self.source),
+            )
 
         records: list[QuoteRecord] = []
-        for symbol in symbols:
+        for symbol in normalized_symbols:
             row = data.get(symbol) or data.get(symbol.lower()) or data.get(symbol.upper())
             if row:
                 records.append(self._normalize(symbol, row, include_raw=include_raw))
         if not records:
-            raise SourceUnavailableError(f"{self.source} returned no requested symbols")
+            raise SourceUnavailableError(
+                f"{self.source} returned no requested symbols",
+                code=_source_error_code(self.source),
+            )
         return records
 
     def _quotation(self) -> Any:
@@ -80,3 +92,9 @@ class EasyQuotationSinaAdapter(BaseQuoteAdapter):
             source_level=self.source_level,
             raw=dict(row) if include_raw else None,
         )
+
+
+def _source_error_code(source: str) -> ErrorCode:
+    if source == "easyquotation_tencent":
+        return ErrorCode.EASYQUOTATION_TENCENT_FAILED
+    return ErrorCode.EASYQUOTATION_SINA_FAILED

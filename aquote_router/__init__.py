@@ -1,8 +1,8 @@
 """Public API for aquote-router."""
 
-from .models import QuoteRecord
+from .models import KlineBar, QuoteRecord
 from .router import QuoteRouter
 
-__version__ = "0.1.0"
+__version__ = "0.2.0"
 
-__all__ = ["QuoteRecord", "QuoteRouter", "__version__"]
+__all__ = ["KlineBar", "QuoteRecord", "QuoteRouter", "__version__"]

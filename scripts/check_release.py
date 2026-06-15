@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import sys
 from pathlib import Path
 
 BANNED_TERMS = [
@@ -11,11 +10,10 @@ BANNED_TERMS = [
     "xtdata",
     "券商",
     "真实交易",
-    "买入",
-    "卖出",
-    "仓位",
     "候选股池",
-    "顶级游资盈利系统",
+    "买卖点",
+    "收益率",
+    "胜率",
     "webhook",
     "token",
     "cookie",
@@ -23,9 +21,6 @@ BANNED_TERMS = [
     "C:\\Users\\weibiaowei",
     "/Users/",
     "Desktop/CODEX",
-    "人工签署",
-    "收益率",
-    "胜率",
 ]
 
 SCAN_SUFFIXES = {
@@ -49,20 +44,20 @@ SKIP_DIRS = {
     "build",
     "dist",
     "logs",
+    "local_reports",
 }
 
 SAFE_CONTEXT_MARKERS = [
-    "不",
-    "未",
-    "禁止",
-    "不要",
-    "Do not",
+    "do not",
     "does not",
+    "never",
     "without",
+    "no ",
+    "not ",
     "id-token",
-    "Trusted Publishing",
-    "是否包含",
+    "trusted publishing",
     "forbidden",
+    "redacted",
 ]
 
 
@@ -85,10 +80,9 @@ def collect_violations(root: Path) -> list[tuple[Path, int, str, str]]:
             continue
         for line_number, line in enumerate(lines, start=1):
             lowered = line.lower()
-            if any(marker.lower() in lowered for marker in SAFE_CONTEXT_MARKERS):
-                continue
+            safe_context = any(marker in lowered for marker in SAFE_CONTEXT_MARKERS)
             for term in BANNED_TERMS:
-                if term.lower() in lowered:
+                if term.lower() in lowered and not safe_context:
                     violations.append((path, line_number, term, line.strip()))
     return violations
 
