@@ -42,6 +42,7 @@ SKIP_DIRS = {
     ".ruff_cache",
     ".venv",
     ".venv_aquote_router_v020_check",
+    ".venv_aquote_router_v021_check",
     "__pycache__",
     "build",
     "dist",

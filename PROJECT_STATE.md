@@ -31,4 +31,6 @@ Validation status:
 - Build passed locally for v0.2.1.
 - The v0.2.1 task keeps public quote and K-line APIs unchanged.
 - The active local pytdx pool is ignored by Git and excluded from release files.
-- GitHub Release, PyPI publication, and post-release cold-start smoke are pending.
+- GitHub Release v0.2.1 completed.
+- PyPI v0.2.1 completed.
+- Post-release cold-start smoke test passed.

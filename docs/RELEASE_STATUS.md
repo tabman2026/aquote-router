@@ -2,7 +2,7 @@
 
 Version: `0.2.1`
 
-Status: local validation passed; release pending.
+Status: released and post-release smoke tested.
 
 Public URLs:
 
