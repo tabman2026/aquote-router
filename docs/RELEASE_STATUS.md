@@ -2,7 +2,7 @@
 
 Version: `0.3.0`
 
-Status: rename release in progress.
+Status: GitHub Release completed; PyPI publication blocked by Trusted Publishing setup.
 
 Public URLs:
 
@@ -17,3 +17,9 @@ Release gates:
 - CLI command: `pyqauto`
 - Publishing path: GitHub Actions Trusted Publishing
 - Local twine upload: not allowed
+
+Current blocker:
+
+- Publish workflow run `27712370388` failed with `invalid-publisher`.
+- Configure PyPI Pending Publisher for project `pyqauto`, then rerun the
+  Publish workflow.

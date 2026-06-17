@@ -1,0 +1,14 @@
+{
+  "task": "post_release_pyqauto_030_smoke_test",
+  "date": "2026-06-18",
+  "package": "pyqauto",
+  "version": "0.3.0",
+  "completed": false,
+  "status": "BLOCKED",
+  "blocked_reason": "PyPI publication failed with invalid-publisher",
+  "pypi_install_command": "python -X utf8 -m pip install pyqauto -i https://pypi.org/simple",
+  "local_pypi_upload_used": false,
+  "pypi_credential_request_status": "未要求",
+  "required_next_action": "Configure PyPI Pending Publisher for pyqauto and rerun Publish workflow 27712370388"
+}
+

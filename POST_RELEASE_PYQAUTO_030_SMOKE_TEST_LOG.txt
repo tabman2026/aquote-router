@@ -1,0 +1,21 @@
+Post-release pyqauto 0.3.0 smoke test log
+
+Status: BLOCKED
+
+The clean venv installation commands were not run because pyqauto 0.3.0 was not
+published to PyPI.
+
+Publish workflow:
+- Repository: tabman2026/pyqauto
+- Workflow: publish.yml
+- Environment: pypi
+- Tag: v0.3.0
+- Run: 27712370388
+- Result: invalid-publisher
+
+Next required action:
+Configure the PyPI Pending Publisher for project pyqauto, then rerun the failed
+GitHub Actions Publish workflow.
+
+No local twine upload was used. No PyPI token was requested or stored.
+

@@ -1,0 +1,43 @@
+任务021 rename log
+
+1. python -X utf8 -m pip index versions pyqauto -i https://pypi.org/simple
+   Result: no matching distribution found.
+2. gh auth status -h github.com
+   Result: authenticated as tabman2026.
+3. gh repo view tabman2026/aquote-router
+   Result: source repository existed.
+4. gh repo view tabman2026/pyqauto
+   Result: target repository did not exist before rename.
+5. gh repo rename -R tabman2026/aquote-router pyqauto --yes
+   Result: success.
+6. git remote set-url origin https://github.com/tabman2026/pyqauto.git
+   Result: success.
+7. Removed old dist artifacts and stale package metadata.
+8. Renamed Python package directory to pyqauto and updated imports.
+9. python -X utf8 -m pytest -q
+   Result: PASS.
+10. python -X utf8 -m ruff check .
+    Result: PASS.
+11. python -X utf8 scripts/check_release.py
+    Result: PASS.
+12. python -X utf8 scripts/smoke_test.py
+    Result: PASS.
+13. python -X utf8 -m build
+    Result: PASS after rerun with UTF-8 environment and network access for isolated build requirements.
+14. git commit -m "chore: rename project to pyqauto"
+    Result: commit ae97687.
+15. git tag v0.3.0
+    Result: success.
+16. git push origin main
+    Result: success.
+17. git push origin v0.3.0
+    Result: success.
+18. gh release create v0.3.0 --repo tabman2026/pyqauto --title "pyqauto v0.3.0" --notes-file CHANGELOG.md
+    Result: https://github.com/tabman2026/pyqauto/releases/tag/v0.3.0
+19. gh run list --repo tabman2026/pyqauto --workflow publish.yml --limit 5
+    Result: Publish run 27712370388 failed.
+20. gh run view 27712370388 --repo tabman2026/pyqauto --log
+    Result: PyPI Trusted Publishing invalid-publisher.
+
+No local twine upload was used. No PyPI token was requested or stored.
+

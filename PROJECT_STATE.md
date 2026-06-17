@@ -46,6 +46,6 @@ Validation status:
   new `pyqauto` name.
 - The active local pytdx pool is ignored by Git and excluded from release files.
 - GitHub repository rename to `tabman2026/pyqauto`: completed.
-- GitHub Release v0.3.0: pending.
-- PyPI pyqauto 0.3.0: pending Trusted Publishing workflow.
-- Post-release cold-start smoke test: pending.
+- GitHub Release v0.3.0: completed.
+- PyPI pyqauto 0.3.0: blocked by PyPI Trusted Publishing `invalid-publisher`.
+- Post-release cold-start smoke test: blocked until PyPI publication completes.
