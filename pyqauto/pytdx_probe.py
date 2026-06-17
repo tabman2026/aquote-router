@@ -12,10 +12,11 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Sequence
 
-from aquote_router.adapters.base import code_for_symbol, market_for_symbol
-from aquote_router.adapters.pytdx_adapter import PYTDX_KLINE_PERIOD_CATEGORIES
+from pyqauto.adapters.base import code_for_symbol, market_for_symbol
+from pyqauto.adapters.pytdx_adapter import PYTDX_KLINE_PERIOD_CATEGORIES
+from pyqauto.policy import DEFAULT_PYTDX_SERVERS_PATH, read_pytdx_servers_text
 
-DEFAULT_CONFIG = "config/pytdx_servers.example.json"
+DEFAULT_CONFIG = DEFAULT_PYTDX_SERVERS_PATH
 DEFAULT_LOCAL_CONFIG = "config/pytdx_servers.local.json"
 DEFAULT_OUTPUT = "config/pytdx_servers.active.local.json"
 DEFAULT_SYMBOL = "000001"
@@ -301,9 +302,14 @@ def _load_config_candidates(
     if not path.exists():
         if optional:
             return 0, []
-        raise FileNotFoundError(f"pytdx server config not found: {_display_path(path)}")
+        if _is_default_config_path(path):
+            text = read_pytdx_servers_text()
+        else:
+            raise FileNotFoundError(f"pytdx server config not found: {_display_path(path)}")
+    else:
+        text = path.read_text(encoding="utf-8")
 
-    raw = json.loads(path.read_text(encoding="utf-8"))
+    raw = json.loads(text)
     if not isinstance(raw, list):
         raise ValueError(f"pytdx server config must be a JSON list: {_display_path(path)}")
 
@@ -324,6 +330,10 @@ def _load_config_candidates(
         if candidate:
             candidates.append(candidate)
     return len(raw), candidates
+
+
+def _is_default_config_path(path: Path) -> bool:
+    return str(path).replace("\\", "/") == DEFAULT_CONFIG
 
 
 def _dedupe_candidates(candidates: list[ServerCandidate]) -> list[ServerCandidate]:

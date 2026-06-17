@@ -1,14 +1,14 @@
-# aquote-router 中文快速开始
+# pyqauto 中文快速开始
 
-aquote-router 是一个面向 A 股量化研究和数据验证脚本的轻量行情源路由器。它把 pytdx 主备切换、easyquotation Sina/Tencent fallback、实时行情、分钟K线、15分钟K线、日K、统一 `kline` 接口、source policy、JSONL / SQLite 行情审计和 `trace_id` 串在一起，帮助你在本地研究环境里更清楚地知道每次 A股行情 调用用了哪个数据源。
+pyqauto 是一个面向 A 股量化研究和数据验证脚本的轻量行情源路由器。它把 pytdx 主备切换、easyquotation Sina/Tencent fallback、实时行情、分钟K线、15分钟K线、日K、统一 `kline` 接口、source policy、JSONL / SQLite 行情审计和 `trace_id` 串在一起，帮助你在本地研究环境里更清楚地知道每次 A股行情 调用用了哪个数据源。
 
 ## 项目是什么
 
-本项目是一个 Python 包，包名是 `aquote-router`，导入名是 `aquote_router`。它不生产行情数据，只调用公开 Python 依赖的公开接口，并把 A股实时行情、A股K线、分钟K线和日K 返回为统一的数据对象。
+本项目是一个 Python 包，包名是 `pyqauto`，导入名是 `pyqauto`。它不生产行情数据，只调用公开 Python 依赖的公开接口，并把 A股实时行情、A股K线、分钟K线和日K 返回为统一的数据对象。
 
 ## 解决什么问题
 
-公开免费行情源会因为网络、地区、时段、上游结构变化而失败。aquote-router 把 source policy、pytdx server 主备顺序、easyquotation fallback、返回字段和审计日志放在一个入口里，减少每个研究脚本重复处理数据源 fallback 的成本。
+公开免费行情源会因为网络、地区、时段、上游结构变化而失败。pyqauto 把 source policy、pytdx server 主备顺序、easyquotation fallback、返回字段和审计日志放在一个入口里，减少每个研究脚本重复处理数据源 fallback 的成本。
 
 ## 不做什么
 
@@ -27,21 +27,16 @@ chcp 65001 >nul
 安装 PyPI 版本：
 
 ```bash
-python -X utf8 -m pip install aquote-router -i https://pypi.org/simple
+python -X utf8 -m pip install pyqauto -i https://pypi.org/simple
 ```
 
 ## 30 秒获取实时行情
 
 ```python
-from aquote_router import QuoteRouter
+import pyqauto as aq
 
-router = QuoteRouter.from_config(
-    pytdx_servers_path="config/pytdx_servers.example.json",
-    source_policy_path="config/source_policy.example.yaml",
-)
-
-quotes = router.realtime_quotes(["000001", "600000"])
-for item in quotes:
+items = aq.quotes(["000001", "600000"])
+for item in items:
     print(item.symbol, item.price, item.source, item.source_level, item.trace_id)
 ```
 
@@ -50,7 +45,7 @@ for item in quotes:
 ## 30 秒获取 15分钟K线
 
 ```python
-bars = router.kline("000001", period="15m", count=120)
+bars = aq.kline("000001", period="15m", count=120)
 for bar in bars[:5]:
     print(bar.datetime, bar.open, bar.high, bar.low, bar.close, bar.source)
 ```
@@ -60,7 +55,7 @@ for bar in bars[:5]:
 ## 30 秒获取日K
 
 ```python
-daily = router.daily_kline("000001", count=120)
+daily = aq.daily("000001", count=120)
 for bar in daily[:5]:
     print(bar.datetime, bar.open, bar.high, bar.low, bar.close, bar.source)
 ```
@@ -68,7 +63,7 @@ for bar in daily[:5]:
 也可以使用统一接口：
 
 ```python
-daily = router.kline("000001", period="1d", count=120)
+daily = aq.kline("000001", period="1d", count=120)
 ```
 
 ## K线超时怎么办
@@ -76,13 +71,13 @@ daily = router.kline("000001", period="1d", count=120)
 K线目前是 pytdx-only。免费 pytdx server 会随网络、地区和时间变化；如果 A股K线、分钟K线、15分钟K线 或日K超时，先从当前网络探测可用 server：
 
 ```bash
-aquote-router probe-pytdx --json --output config/pytdx_servers.active.local.json
+pyqauto probe-pytdx --json --output config/pytdx_servers.active.local.json
 ```
 
 然后显式传入本地探测结果：
 
 ```bash
-aquote-router kline 000001 --period 15m --count 10 --pytdx-servers config/pytdx_servers.active.local.json --json
+pyqauto kline 000001 --period 15m --count 10 --pytdx-servers config/pytdx_servers.active.local.json --json
 ```
 
 `config/pytdx_servers.active.local.json` 是本地诊断结果，不应提交到仓库。
@@ -90,7 +85,7 @@ aquote-router kline 000001 --period 15m --count 10 --pytdx-servers config/pytdx_
 ## 如何运行 probe-pytdx
 
 ```bash
-aquote-router probe-pytdx --json --output config/pytdx_servers.active.local.json
+pyqauto probe-pytdx --json --output config/pytdx_servers.active.local.json
 ```
 
 常用参数：
@@ -106,26 +101,23 @@ aquote-router probe-pytdx --json --output config/pytdx_servers.active.local.json
 Python 对象可直接读取字段：
 
 ```python
-quotes = router.realtime_quotes(["000001"])
-item = quotes[0]
+item = aq.quote("000001")
 print(item.source, item.source_level, item.trace_id)
 ```
 
 CLI 建议加 `--json`：
 
 ```bash
-aquote-router realtime 000001 --json
-aquote-router kline 000001 --period 15m --count 10 --json
+pyqauto realtime 000001 --json
+pyqauto kline 000001 --period 15m --count 10 --json
 ```
 
 如果启用审计日志，使用同一个 `trace_id` 可以定位对应请求：
 
 ```python
-router = QuoteRouter.from_config(
-    pytdx_servers_path="config/pytdx_servers.example.json",
-    source_policy_path="config/source_policy.example.yaml",
-    audit_jsonl_path="logs/aquote_router_audit.jsonl",
-    audit_sqlite_path="logs/aquote_router_audit.sqlite3",
+aq.configure(
+    audit_jsonl_path="logs/pyqauto_audit.jsonl",
+    audit_sqlite_path="logs/pyqauto_audit.sqlite3",
 )
 ```
 
@@ -180,15 +172,15 @@ kline: pytdx only
 ## CLI 常用命令
 
 ```bash
-aquote-router diagnose --json
-aquote-router realtime 000001 600000 --json
-aquote-router full 000001 600000 --json
-aquote-router index 000001 399001 --json
-aquote-router minute 000001 --period 15m --count 120 --json
-aquote-router daily 000001 --count 120 --json
-aquote-router kline 000001 --period 15m --count 120 --json
-aquote-router kline 000001 --period 1d --count 120 --json
-aquote-router probe-pytdx --json --output config/pytdx_servers.active.local.json
+pyqauto diagnose --json
+pyqauto realtime 000001 600000 --json
+pyqauto full 000001 600000 --json
+pyqauto index 000001 399001 --json
+pyqauto minute 000001 --period 15m --count 120 --json
+pyqauto daily 000001 --count 120 --json
+pyqauto kline 000001 --period 15m --count 120 --json
+pyqauto kline 000001 --period 1d --count 120 --json
+pyqauto probe-pytdx --json --output config/pytdx_servers.active.local.json
 ```
 
 ## 常见问题入口
@@ -206,18 +198,18 @@ aquote-router probe-pytdx --json --output config/pytdx_servers.active.local.json
 提交 issue 前请先运行：
 
 ```bash
-aquote-router diagnose --json
+pyqauto diagnose --json
 ```
 
 如果是 K线超时或 pytdx 连接失败，请再运行：
 
 ```bash
-aquote-router probe-pytdx --json --output config/pytdx_servers.active.local.json
+pyqauto probe-pytdx --json --output config/pytdx_servers.active.local.json
 ```
 
 反馈时建议提供：
 
-- Python 版本、操作系统和 aquote-router 版本。
+- Python 版本、操作系统和 pyqauto 版本。
 - 使用的命令或最小 Python 代码。
 - `trace_id`、结构化错误码和已脱敏的审计片段。
 - 是否只在某个网络、地区或时段失败。

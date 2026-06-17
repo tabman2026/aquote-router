@@ -2,7 +2,7 @@
   "task": "018.1",
   "completed": true,
   "path_audit": {
-    "repository_root": "aquote-router",
+    "repository_root": "pyqauto",
     "repository_markers_found": true,
     "task018_files_found_in_parent": true,
     "copied_to_repository": true,

@@ -1,6 +1,6 @@
 # K-line Guide
 
-K-line APIs are pytdx-only in v0.2.1. They do not fall back to easyquotation.
+K-line APIs are pytdx-only in v0.3.0. They do not fall back to easyquotation.
 When pytdx cannot return bars, the router raises a structured error and writes
 audit attempts plus `fallback_chain`.
 
@@ -19,41 +19,43 @@ audit attempts plus `fallback_chain`.
 15-minute bars:
 
 ```python
-bars = router.minute_kline("000001", period="15m", count=120)
+import pyqauto as aq
+
+bars = aq.minute("000001", period="15m", count=120)
 ```
 
 Daily bars:
 
 ```python
-bars = router.daily_kline("000001", count=120)
+bars = aq.daily("000001", count=120)
 ```
 
 Unified API:
 
 ```python
-minute_bars = router.kline("000001", period="15m", count=120)
-daily_bars = router.kline("000001", period="1d", count=120)
+minute_bars = aq.kline("000001", period="15m", count=120)
+daily_bars = aq.kline("000001", period="1d", count=120)
 ```
 
 ## CLI Examples
 
 ```bash
-aquote-router minute 000001 --period 15m --count 120 --json
-aquote-router daily 000001 --count 120 --json
-aquote-router kline 000001 --period 1d --count 120 --json
+pyqauto minute 000001 --period 15m --count 120 --json
+pyqauto daily 000001 --count 120 --json
+pyqauto kline 000001 --period 1d --count 120 --json
 ```
 
 If K-line calls time out, probe the pytdx server pool and write an active local
 pool:
 
 ```bash
-aquote-router probe-pytdx --json --output config/pytdx_servers.active.local.json
+pyqauto probe-pytdx --json --output config/pytdx_servers.active.local.json
 ```
 
 Then use that pool for K-line:
 
 ```bash
-aquote-router kline 000001 --period 15m --count 10 \
+pyqauto kline 000001 --period 15m --count 10 \
   --pytdx-servers config/pytdx_servers.active.local.json --json
 ```
 
@@ -87,6 +89,6 @@ K-line APIs return `KlineBar` objects with:
 
 ## Unsupported Features
 
-Adjusted bars are not supported in v0.2.1. There is no front-adjusted or
+Adjusted bars are not supported in v0.3.0. There is no front-adjusted or
 back-adjusted K-line API unless a future release adds explicit fields, tests,
 and documentation.

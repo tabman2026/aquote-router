@@ -13,6 +13,10 @@ libraries through adapters and records which source returned each response.
 
 ## Fallback Rules
 
+The default source policy and example pytdx server pool are bundled with the
+package, so users can call `import pyqauto as aq` and use `aq.quote(...)` without
+copying config files into their own project.
+
 ```text
 realtime_quotes: pytdx -> easyquotation_sina -> easyquotation_tencent
 full_realtime_quotes: pytdx -> easyquotation_sina -> easyquotation_tencent
@@ -27,7 +31,7 @@ fail, the router raises a structured error and writes audit attempts plus
 `fallback_chain`.
 
 Free pytdx server availability changes by network, region, and time. Use
-`aquote-router probe-pytdx --json --output config/pytdx_servers.active.local.json`
+`pyqauto probe-pytdx --json --output config/pytdx_servers.active.local.json`
 to generate an observed active local pool when pytdx calls time out. The active
 local file is a diagnostic result for the current environment and should not be
 committed.

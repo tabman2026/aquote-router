@@ -3,9 +3,9 @@ from __future__ import annotations
 import pytest
 from test_router_fallback import FakeAdapter, make_router
 
-from aquote_router.adapters.pytdx_adapter import PYTDX_KLINE_PERIOD_CATEGORIES
-from aquote_router.exceptions import UnsupportedPeriodError
-from aquote_router.policy import SUPPORTED_MINUTE_KLINE_PERIODS
+from pyqauto.adapters.pytdx_adapter import PYTDX_KLINE_PERIOD_CATEGORIES
+from pyqauto.exceptions import UnsupportedPeriodError
+from pyqauto.policy import SUPPORTED_MINUTE_KLINE_PERIODS
 
 
 def test_pytdx_period_mapping_covers_supported_minute_periods() -> None:

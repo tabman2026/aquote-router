@@ -9,7 +9,7 @@ package behavior.
 
 Please include:
 
-- `aquote-router` version you tried to install.
+- `pyqauto` version you tried to install.
 - Python version from `python -X utf8 --version`.
 - OS name and terminal, for example Windows PowerShell or macOS Terminal.
 - Full install command.
@@ -17,14 +17,14 @@ Please include:
 - Output from:
 
 ```bash
-python -X utf8 -m pip show aquote-router
+python -X utf8 -m pip show pyqauto
 ```
 
 On Windows, run:
 
 ```bat
 chcp 65001 >nul
-python -X utf8 -m pip show aquote-router
+python -X utf8 -m pip show pyqauto
 ```
 
 Do not include private credentials, account information, or local absolute paths
@@ -34,7 +34,7 @@ that are not needed to reproduce the problem.
 
 Please include:
 
-- `aquote-router` version.
+- `pyqauto` version.
 - Python version and OS.
 - Full command or minimal Python code.
 - API name, such as `realtime_quotes`, `minute_kline`, `daily_kline`, or
@@ -43,7 +43,7 @@ Please include:
 - `period` and `count` for K-line APIs, or `N/A` for realtime APIs.
 - `trace_id` from CLI JSON output, returned records, or audit logs.
 - Sanitized audit log snippet for the same `trace_id`.
-- Output from `aquote-router diagnose --json`.
+- Output from `pyqauto diagnose --json`.
 - Whether the problem happens every time or intermittently.
 
 ## K-line Timeout Reports
@@ -51,13 +51,13 @@ Please include:
 K-line APIs are pytdx-only. Before opening a K-line timeout issue, run:
 
 ```bash
-aquote-router probe-pytdx --json --output config/pytdx_servers.active.local.json
+pyqauto probe-pytdx --json --output config/pytdx_servers.active.local.json
 ```
 
 Then retry with:
 
 ```bash
-aquote-router kline 000001 --period 15m --count 10 \
+pyqauto kline 000001 --period 15m --count 10 \
   --pytdx-servers config/pytdx_servers.active.local.json --json
 ```
 
@@ -94,14 +94,16 @@ Do not include tokens, cookies, secrets, or account login data.
 Prefer CLI JSON output:
 
 ```bash
-aquote-router realtime 000001 --json
+pyqauto realtime 000001 --json
 ```
 
 For Python calls, inspect the returned model:
 
 ```python
-records = router.realtime_quotes(["000001"])
-print(records[0].trace_id)
+import pyqauto as aq
+
+record = aq.quote("000001")
+print(record.trace_id)
 ```
 
 If the call failed before returning records, find the matching audit log entry
@@ -113,7 +115,7 @@ by time and API name, then copy its `trace_id`.
 connect to upstream providers.
 
 ```bash
-aquote-router diagnose --json
+pyqauto diagnose --json
 ```
 
 Include the full sanitized JSON output in source failure issues.
@@ -124,7 +126,7 @@ Include the full sanitized JSON output in source failure issues.
 pool:
 
 ```bash
-aquote-router probe-pytdx --json --output config/pytdx_servers.active.local.json
+pyqauto probe-pytdx --json --output config/pytdx_servers.active.local.json
 ```
 
 Useful fields in the output include connected server counts, K-line success

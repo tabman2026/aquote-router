@@ -21,7 +21,7 @@ body:
     id: apis
     attributes:
       label: API coverage
-      description: Which aquote-router APIs should this adapter support?
+      description: Which pyqauto APIs should this adapter support?
       placeholder: "realtime_quotes, full_realtime_quotes, index_realtime, minute_kline"
     validations:
       required: true

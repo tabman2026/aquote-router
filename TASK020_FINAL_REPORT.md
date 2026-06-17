@@ -2,7 +2,7 @@
 
 ## Scope
 
-- Added Chinese GitHub first-screen onboarding for `aquote-router`.
+- Added Chinese GitHub first-screen onboarding for `pyqauto`.
 - Added Chinese README, Chinese docs index, and GitHub About manual setup guide.
 - Added tests for Chinese docs entry points, required examples, and local path leakage.
 - No package name, public API, tag, or PyPI release change.

@@ -1,19 +1,38 @@
 # API Reference
 
+## Simple API
+
+```python
+import pyqauto as aq
+
+aq.quote("000001")                         # one realtime quote
+aq.quotes(["000001", "600000"])            # realtime quotes
+aq.full_quotes(["000001", "600000"])       # full realtime quotes
+aq.index(["000001", "399001"])             # index realtime quotes
+aq.minute("000001", period="15m", count=120)
+aq.daily("000001", count=120)
+aq.kline("000001", period="1d", count=120)
+aq.diagnose()
+```
+
+`aq.configure(...)` is optional and only needed for custom config paths or audit
+outputs.
+
 ## `QuoteRouter.from_config`
 
 ```python
 QuoteRouter.from_config(
     *,
-    pytdx_servers_path: str | Path,
-    source_policy_path: str | Path,
+    pytdx_servers_path: str | Path | None = None,
+    source_policy_path: str | Path | None = None,
     audit_jsonl_path: str | Path | None = None,
     audit_sqlite_path: str | Path | None = None,
 ) -> QuoteRouter
 ```
 
-Loads pytdx server config, source policy, realtime adapters, and optional audit
-writers.
+Loads bundled default pytdx server config and source policy unless explicit
+paths are provided. Realtime adapters and optional audit writers are initialized
+from the resolved configuration.
 
 ## `realtime_quotes`
 
@@ -81,7 +100,7 @@ Returns local router configuration without connecting to upstream providers.
 CLI equivalent:
 
 ```bash
-aquote-router diagnose --json
+pyqauto diagnose --json
 ```
 
 ## Return Values

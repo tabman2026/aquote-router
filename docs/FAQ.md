@@ -2,7 +2,7 @@
 
 ## Is this a data provider?
 
-No. aquote-router routes calls to user-configured providers and normalizes the result. It does not host or redistribute market data.
+No. pyqauto routes calls to user-configured providers and normalizes the result. It does not host or redistribute market data.
 
 ## Why is minute_kline pytdx-only?
 

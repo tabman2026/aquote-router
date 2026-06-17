@@ -1,8 +1,10 @@
 from __future__ import annotations
 
 import json
+from importlib.resources import files
 
-from aquote_router.policy import load_pytdx_servers, load_source_policy
+from pyqauto.policy import load_pytdx_servers, load_source_policy
+from pyqauto.router import QuoteRouter
 
 
 def test_source_policy_example_parses() -> None:
@@ -34,6 +36,35 @@ def test_source_policy_example_parses() -> None:
         "60m",
         "1d",
     ]
+
+
+def test_packaged_default_configs_load_without_project_config(tmp_path, monkeypatch) -> None:
+    monkeypatch.chdir(tmp_path)
+
+    policy = load_source_policy()
+    servers = load_pytdx_servers()
+    router = QuoteRouter.from_config()
+
+    assert policy.api("realtime_quotes").fallback_order[0] == "pytdx"
+    assert [server.role for server in servers] == ["primary", "hot_backup", "backup"]
+    assert router.diagnose()["pytdx_servers"][0]["source"] == "pytdx"
+
+
+def test_legacy_example_paths_fall_back_to_packaged_defaults(tmp_path, monkeypatch) -> None:
+    monkeypatch.chdir(tmp_path)
+
+    policy = load_source_policy("config/source_policy.example.yaml")
+    servers = load_pytdx_servers("config/pytdx_servers.example.json")
+
+    assert policy.api("daily_kline").fallback_order == ["pytdx"]
+    assert len(servers) == 3
+
+
+def test_packaged_default_config_resources_exist() -> None:
+    config_files = files("pyqauto.config")
+
+    assert config_files.joinpath("source_policy.example.yaml").is_file()
+    assert config_files.joinpath("pytdx_servers.example.json").is_file()
 
 
 def test_pytdx_servers_sorted_by_role_and_latency(tmp_path) -> None:

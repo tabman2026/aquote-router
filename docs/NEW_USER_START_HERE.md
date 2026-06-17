@@ -5,65 +5,65 @@ This page is the shortest path for users who only want to call the package.
 ## Install
 
 ```bash
-python -X utf8 -m pip install aquote-router
+python -X utf8 -m pip install pyqauto
 ```
 
 On Windows terminals, set UTF-8 first:
 
 ```bat
 chcp 65001 >nul
-python -X utf8 -m pip install aquote-router
+python -X utf8 -m pip install pyqauto
 ```
 
 ## I Only Want Realtime Quotes
 
 ```python
-from aquote_router import QuoteRouter
+import pyqauto as aq
 
-router = QuoteRouter.from_config(
-    pytdx_servers_path="config/pytdx_servers.example.json",
-    source_policy_path="config/source_policy.example.yaml",
-)
-
-records = router.realtime_quotes(["000001"])
-print(records[0].to_dict())
+record = aq.quote("000001")
+print(record.to_dict())
 ```
+
+No local config files are required for this minimal call. The package includes
+default source policy and pytdx server config.
 
 CLI:
 
 ```bash
-aquote-router realtime 000001 --json
+pyqauto realtime 000001 --json
 ```
 
 Realtime APIs use pytdx first and may fall back to easyquotation Sina or Tencent
-according to source policy.
+according to source policy. `aq.quote(...)` and `aq.quotes(...)` use the
+underlying `realtime_quotes` API.
 
 ## I Only Want 15-minute K-line
 
 ```python
-bars = router.minute_kline("000001", period="15m", count=120)
+bars = aq.kline("000001", period="15m", count=120)
 print(bars[0].to_dict())
 ```
 
 CLI:
 
 ```bash
-aquote-router kline 000001 --period 15m --count 120 --json
+pyqauto kline 000001 --period 15m --count 120 --json
 ```
 
 K-line APIs are pytdx-only. They do not use easyquotation fallback.
+`aq.daily(...)` uses the underlying `daily_kline` API.
 
 ## I Only Want Daily K-line
 
 ```python
-bars = router.daily_kline("000001", count=120)
+bars = aq.daily("000001", count=120)
 print(bars[0].to_dict())
 ```
 
 CLI:
 
 ```bash
-aquote-router kline 000001 --period 1d --count 120 --json
+pyqauto kline 000001 --period 1d --count 120 --json
 ```
 
 ## K-line Timeout
@@ -71,13 +71,13 @@ aquote-router kline 000001 --period 1d --count 120 --json
 First probe pytdx servers from the current network:
 
 ```bash
-aquote-router probe-pytdx --json --output config/pytdx_servers.active.local.json
+pyqauto probe-pytdx --json --output config/pytdx_servers.active.local.json
 ```
 
 Then retry K-line with the active local pool:
 
 ```bash
-aquote-router kline 000001 --period 15m --count 10 \
+pyqauto kline 000001 --period 15m --count 10 \
   --pytdx-servers config/pytdx_servers.active.local.json --json
 ```
 

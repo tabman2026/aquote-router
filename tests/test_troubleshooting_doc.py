@@ -22,8 +22,8 @@ def test_required_maintenance_docs_exist() -> None:
 def test_troubleshooting_doc_exists_and_mentions_diagnostics() -> None:
     text = (ROOT / "docs" / "TROUBLESHOOTING.md").read_text(encoding="utf-8")
 
-    assert "aquote-router diagnose" in text
-    assert "aquote-router diagnose --json" in text
+    assert "pyqauto diagnose" in text
+    assert "pyqauto diagnose --json" in text
     assert "trace_id" in text
     assert "source_policy_parseable" in text
     assert "pytdx_server_config_parseable" in text

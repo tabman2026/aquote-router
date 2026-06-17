@@ -3,7 +3,7 @@ from __future__ import annotations
 import pytest
 from test_router_fallback import FakeAdapter, make_router
 
-from aquote_router.exceptions import UnsupportedPeriodError
+from pyqauto.exceptions import UnsupportedPeriodError
 
 
 def test_kline_routes_minute_periods_to_minute_kline() -> None:

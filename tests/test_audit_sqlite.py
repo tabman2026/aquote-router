@@ -2,10 +2,10 @@ from __future__ import annotations
 
 import sqlite3
 
-from aquote_router.audit import AuditLogger
-from aquote_router.models import QuoteRecord
-from aquote_router.policy import SourcePolicy
-from aquote_router.router import QuoteRouter
+from pyqauto.audit import AuditLogger
+from pyqauto.models import QuoteRecord
+from pyqauto.policy import SourcePolicy
+from pyqauto.router import QuoteRouter
 
 
 class SuccessAdapter:

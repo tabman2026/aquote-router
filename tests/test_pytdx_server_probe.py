@@ -5,7 +5,7 @@ import json
 import sys
 from pathlib import Path
 
-from aquote_router import pytdx_probe
+from pyqauto import pytdx_probe
 
 
 def _load_probe_module():
@@ -44,6 +44,22 @@ def test_load_config_candidates_skips_disabled_entries(tmp_path) -> None:
     assert [(candidate.host, candidate.role) for candidate in candidates] == [
         ("1.1.1.1", "primary")
     ]
+
+
+def test_load_config_candidates_uses_packaged_default_without_project_config(
+    tmp_path,
+    monkeypatch,
+) -> None:
+    monkeypatch.chdir(tmp_path)
+
+    total_count, candidates = pytdx_probe._load_config_candidates(
+        Path(pytdx_probe.DEFAULT_CONFIG),
+        source=pytdx_probe.DEFAULT_CONFIG,
+        optional=False,
+    )
+
+    assert total_count == 3
+    assert candidates[0].host == "119.147.212.81"
 
 
 def test_dedupe_candidates_preserves_first_source() -> None:

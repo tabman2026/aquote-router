@@ -4,8 +4,8 @@ Created at: 2026-06-15T11:56:30Z
 
 ## Path Audit
 
-- Repository root: `aquote-router`
-- Required repository markers found: `pyproject.toml`, `README.md`, `aquote_router/__init__.py`, `.github/workflows/`, `docs/`, `scripts/`
+- Repository root: `pyqauto`
+- Required repository markers found: `pyproject.toml`, `README.md`, `pyqauto/__init__.py`, `.github/workflows/`, `docs/`, `scripts/`
 - Task018 files were found in the parent workspace instead of the repository root.
 - `scripts/live_check.py` was copied to `scripts/live_check.py`.
 - `docs/LIVE_CHECK.md` was copied to `docs/LIVE_CHECK.md`.

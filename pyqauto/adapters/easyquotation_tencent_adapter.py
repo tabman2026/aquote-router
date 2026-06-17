@@ -1,6 +1,6 @@
 """easyquotation Tencent adapter."""
 
-from aquote_router.adapters.easyquotation_sina_adapter import EasyQuotationSinaAdapter
+from pyqauto.adapters.easyquotation_sina_adapter import EasyQuotationSinaAdapter
 
 
 class EasyQuotationTencentAdapter(EasyQuotationSinaAdapter):

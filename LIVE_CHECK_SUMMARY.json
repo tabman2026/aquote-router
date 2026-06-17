@@ -14,9 +14,9 @@
     "python_executable": "<configured>",
     "python_version": "3.14.5",
     "platform": "Windows-10-10.0.19045-SP0",
-    "aquote_router_import_version": "0.2.0",
-    "aquote_router_package_metadata_version": "0.2.0",
-    "aquote_router_console": "aquote-router"
+    "pyqauto_import_version": "0.2.0",
+    "pyqauto_package_metadata_version": "0.2.0",
+    "pyqauto_console": "pyqauto"
   },
   "config": {
     "source_policy_path": "config/source_policy.example.yaml",
@@ -972,7 +972,7 @@
     {
       "kind": "cli",
       "api_name": "diagnose",
-      "label": "aquote-router diagnose --json",
+      "label": "pyqauto diagnose --json",
       "status": "PASS",
       "success": true,
       "reason": "cli_ok",
@@ -994,7 +994,7 @@
     {
       "kind": "cli",
       "api_name": "realtime_quotes",
-      "label": "aquote-router realtime 000001 600000 --json",
+      "label": "pyqauto realtime 000001 600000 --json",
       "status": "PASS",
       "success": true,
       "reason": "cli_ok",
@@ -1031,7 +1031,7 @@
     {
       "kind": "cli",
       "api_name": "index_realtime",
-      "label": "aquote-router index 399001 --json",
+      "label": "pyqauto index 399001 --json",
       "status": "PASS",
       "success": true,
       "reason": "cli_ok",
@@ -1068,7 +1068,7 @@
     {
       "kind": "cli",
       "api_name": "kline",
-      "label": "aquote-router kline 000001 --period 15m --count 10 --json",
+      "label": "pyqauto kline 000001 --period 15m --count 10 --json",
       "status": "PASS",
       "success": true,
       "reason": "cli_ok",
@@ -1105,7 +1105,7 @@
     {
       "kind": "cli",
       "api_name": "kline",
-      "label": "aquote-router kline 000001 --period 1d --count 10 --json",
+      "label": "pyqauto kline 000001 --period 1d --count 10 --json",
       "status": "PASS",
       "success": true,
       "reason": "cli_ok",

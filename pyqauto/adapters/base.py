@@ -5,8 +5,8 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Any
 
-from aquote_router.exceptions import AdapterError, UnsupportedSymbolError
-from aquote_router.models import KlineBar, QuoteRecord
+from pyqauto.exceptions import AdapterError, UnsupportedSymbolError
+from pyqauto.models import KlineBar, QuoteRecord
 
 
 @dataclass(frozen=True)

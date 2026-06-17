@@ -1,15 +1,3 @@
-# Source Policy
-
-Source policy defines which adapter family may serve each public API and in what
-order.
-
-## Default Policy
-
-The default policy is bundled as package data and is used by the simple
-`pyqauto` functions and by `QuoteRouter.from_config()` when no custom
-`source_policy_path` is provided.
-
-```yaml
 apis:
   realtime_quotes:
     allow_fallback: true
@@ -61,20 +49,3 @@ apis:
       - 30m
       - 60m
       - 1d
-```
-
-## pytdx Server Order
-
-pytdx server entries are expanded by role:
-
-1. `primary`
-2. `hot_backup`
-3. `backup`
-
-Servers in the same role are sorted by `latency_ms` ascending.
-
-## K-line Rule
-
-`minute_kline`, `daily_kline`, and `kline` must remain pytdx-only. If all pytdx
-servers fail, pyqauto raises `NoAvailableSourceError` and writes an audit
-record with attempts and `fallback_chain`.

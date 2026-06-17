@@ -7,19 +7,19 @@ import uuid
 from pathlib import Path
 from typing import Any
 
-from aquote_router.adapters.base import BaseQuoteAdapter, code_for_symbol, source_id
-from aquote_router.adapters.easyquotation_sina_adapter import EasyQuotationSinaAdapter
-from aquote_router.adapters.easyquotation_tencent_adapter import EasyQuotationTencentAdapter
-from aquote_router.adapters.pytdx_adapter import PytdxAdapter
-from aquote_router.audit import AuditLogger
-from aquote_router.exceptions import (
+from pyqauto.adapters.base import BaseQuoteAdapter, code_for_symbol, source_id
+from pyqauto.adapters.easyquotation_sina_adapter import EasyQuotationSinaAdapter
+from pyqauto.adapters.easyquotation_tencent_adapter import EasyQuotationTencentAdapter
+from pyqauto.adapters.pytdx_adapter import PytdxAdapter
+from pyqauto.audit import AuditLogger
+from pyqauto.exceptions import (
     ConfigurationError,
     ErrorCode,
     NoAvailableSourceError,
     UnsupportedPeriodError,
 )
-from aquote_router.models import AuditAttempt, AuditRecord, KlineBar, QuoteRecord, utc_now_iso
-from aquote_router.policy import (
+from pyqauto.models import AuditAttempt, AuditRecord, KlineBar, QuoteRecord, utc_now_iso
+from pyqauto.policy import (
     SUPPORTED_DAILY_KLINE_PERIODS,
     SUPPORTED_KLINE_PERIODS,
     SUPPORTED_MINUTE_KLINE_PERIODS,
@@ -54,12 +54,12 @@ class QuoteRouter:
     def from_config(
         cls,
         *,
-        pytdx_servers_path: str | Path,
-        source_policy_path: str | Path,
+        pytdx_servers_path: str | Path | None = None,
+        source_policy_path: str | Path | None = None,
         audit_jsonl_path: str | Path | None = None,
         audit_sqlite_path: str | Path | None = None,
     ) -> "QuoteRouter":
-        """Create a router from JSON/YAML config files."""
+        """Create a router from JSON/YAML config files or bundled defaults."""
 
         policy = load_source_policy(source_policy_path)
         servers = load_pytdx_servers(pytdx_servers_path)

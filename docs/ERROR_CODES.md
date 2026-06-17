@@ -23,4 +23,4 @@ audit records.
 | `CLI_ARGUMENT_ERROR` | CLI arguments are invalid. | Missing argument or unsupported option combination. |
 
 When reporting a source failure, include the error code, `trace_id`,
-`fallback_chain`, and sanitized `aquote-router diagnose --json` output.
+`fallback_chain`, and sanitized `pyqauto diagnose --json` output.

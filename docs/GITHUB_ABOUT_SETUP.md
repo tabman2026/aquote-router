@@ -11,7 +11,7 @@ A股行情源路由器：pytdx 主备切换、easyquotation fallback、实时行
 ## Website
 
 ```text
-https://pypi.org/project/aquote-router/
+https://pypi.org/project/pyqauto/
 ```
 
 ## Topics 建议

@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from test_router_fallback import FakeAdapter, make_router
 
-from aquote_router.adapters.pytdx_adapter import PYTDX_KLINE_PERIOD_CATEGORIES
+from pyqauto.adapters.pytdx_adapter import PYTDX_KLINE_PERIOD_CATEGORIES
 
 
 def test_pytdx_period_mapping_contains_daily() -> None:

@@ -1,4 +1,4 @@
-"""Offline smoke test for aquote-router."""
+"""Offline smoke test for pyqauto."""
 
 from __future__ import annotations
 
@@ -14,15 +14,15 @@ if str(ROOT) not in sys.path:
 
 
 def main() -> int:
-    from aquote_router.policy import load_pytdx_servers, load_source_policy
+    from pyqauto.policy import load_pytdx_servers, load_source_policy
 
-    policy = load_source_policy(ROOT / "config" / "source_policy.example.yaml")
-    servers = load_pytdx_servers(ROOT / "config" / "pytdx_servers.example.json")
+    policy = load_source_policy()
+    servers = load_pytdx_servers()
 
     env = os.environ.copy()
     env["PYTHONUTF8"] = "1"
     cli_result = subprocess.run(
-        [sys.executable, "-X", "utf8", "-m", "aquote_router.cli", "--help"],
+        [sys.executable, "-X", "utf8", "-m", "pyqauto.cli", "--help"],
         cwd=ROOT,
         env=env,
         capture_output=True,

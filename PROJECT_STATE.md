@@ -1,8 +1,21 @@
 # Project State
 
-Date: 2026-06-15
+Date: 2026-06-18
 
-Version target: `0.2.1`
+Version target: `0.3.0`
+
+Current release task status:
+
+- Project brand, PyPI package name, import package, CLI command, and GitHub
+  repository are renamed to `pyqauto`.
+- The old `aquote-router` package and `aquote_router` import path are no longer
+  the recommended installation or import path.
+- Default source policy and example pytdx server pool remain bundled as package data.
+- The `pyqauto` import package exposes simple module-level functions for default use.
+- `QuoteRouter.from_config()` can be called without config path arguments.
+- Legacy example paths under `config/` fall back to packaged defaults when the
+  caller's project does not have those files.
+- Public examples now use the zero-config constructor path by default.
 
 Implemented public APIs:
 
@@ -24,13 +37,15 @@ Source policy status:
 
 Validation status:
 
-- pytest passed locally for v0.2.1.
-- ruff passed locally for v0.2.1.
-- Release scan passed locally for v0.2.1.
-- Offline smoke test passed locally for v0.2.1.
-- Build passed locally for v0.2.1.
-- The v0.2.1 task keeps public quote and K-line APIs unchanged.
+- pytest passed locally for v0.3.0 rename task.
+- ruff passed locally for v0.3.0 rename task.
+- Release scan passed locally for v0.3.0 rename task.
+- Offline smoke test passed locally for v0.3.0 rename task.
+- Build passed locally for v0.3.0 rename task.
+- The v0.3.0 task keeps public quote and K-line behavior unchanged under the
+  new `pyqauto` name.
 - The active local pytdx pool is ignored by Git and excluded from release files.
-- GitHub Release v0.2.1 completed.
-- PyPI v0.2.1 completed.
-- Post-release cold-start smoke test passed.
+- GitHub repository rename to `tabman2026/pyqauto`: completed.
+- GitHub Release v0.3.0: pending.
+- PyPI pyqauto 0.3.0: pending Trusted Publishing workflow.
+- Post-release cold-start smoke test: pending.

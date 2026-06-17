@@ -6,8 +6,8 @@ import json
 import sqlite3
 from pathlib import Path
 
-from aquote_router.exceptions import ErrorCode, QuoteRouterError
-from aquote_router.models import AuditRecord
+from pyqauto.exceptions import ErrorCode, QuoteRouterError
+from pyqauto.models import AuditRecord
 
 
 class AuditLogger:

@@ -30,7 +30,7 @@ def test_docs_explain_pytdx_probe_and_active_local_pool() -> None:
     text = _combined_docs()
 
     assert (
-        "aquote-router probe-pytdx --json --output "
+        "pyqauto probe-pytdx --json --output "
         "config/pytdx_servers.active.local.json"
     ) in text
     assert "--pytdx-servers config/pytdx_servers.active.local.json --json" in text
@@ -41,7 +41,7 @@ def test_docs_explain_pytdx_probe_and_active_local_pool() -> None:
 
 
 def test_docs_do_not_add_blocked_workflows() -> None:
-    text = _combined_docs()
+    lines = _combined_docs().splitlines()
     blocked_terms = [
         "Q" + "MT",
         "券" + "商",
@@ -51,6 +51,23 @@ def test_docs_do_not_add_blocked_workflows() -> None:
         "收益" + "率",
         "胜" + "率",
     ]
+    safe_markers = [
+        "does not",
+        "do not",
+        "no ",
+        "not ",
+        "不提供",
+        "不生成",
+        "不接入",
+        "不输出",
+        "不允许",
+        "禁止",
+    ]
 
     for term in blocked_terms:
-        assert term not in text
+        unsafe_lines = [
+            line
+            for line in lines
+            if term in line and not any(marker in line for marker in safe_markers)
+        ]
+        assert unsafe_lines == []

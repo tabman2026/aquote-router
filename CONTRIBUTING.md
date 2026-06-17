@@ -1,6 +1,6 @@
 # Contributing
 
-Thank you for helping improve aquote-router.
+Thank you for helping improve pyqauto.
 
 ## Development
 

@@ -2,7 +2,8 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from aquote_router import QuoteRouter
+import pyqauto
+from pyqauto import QuoteRouter
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -21,6 +22,24 @@ def test_api_reference_lists_public_router_methods() -> None:
         "diagnose",
     ]:
         assert hasattr(QuoteRouter, api_name)
+        assert api_name in text
+
+
+def test_api_reference_lists_simple_api_functions() -> None:
+    text = (ROOT / "docs" / "API_REFERENCE.md").read_text(encoding="utf-8")
+
+    for api_name in [
+        "quote",
+        "quotes",
+        "full_quotes",
+        "index",
+        "minute",
+        "daily",
+        "kline",
+        "diagnose",
+        "configure",
+    ]:
+        assert hasattr(pyqauto, api_name)
         assert api_name in text
 
 

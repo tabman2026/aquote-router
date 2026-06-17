@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from aquote_router.exceptions import ERROR_CODES
+from pyqauto.exceptions import ERROR_CODES
 
 ROOT = Path(__file__).resolve().parents[1]
 

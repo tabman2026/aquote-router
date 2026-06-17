@@ -4,8 +4,8 @@ Date: 2026-06-15
 
 ## Release Targets
 
-- GitHub Release: https://github.com/tabman2026/aquote-router/releases/tag/v0.2.1
-- PyPI project: https://pypi.org/project/aquote-router/
+- GitHub Release: https://github.com/tabman2026/pyqauto/releases/tag/v0.2.1
+- PyPI project: https://pypi.org/project/pyqauto/
 - PyPI version verified: `0.2.1`
 
 ## Checks
@@ -15,13 +15,13 @@ Date: 2026-06-15
 | GitHub Actions `Publish` for `v0.2.1` | PASS |
 | PyPI index lists `0.2.1` | PASS |
 | Fresh venv created for verification | PASS |
-| `pip install --upgrade aquote-router -i https://pypi.org/simple` installs `0.2.1` | PASS |
-| `import aquote_router; print(aquote_router.__version__)` | PASS |
-| `from aquote_router import QuoteRouter` | PASS |
-| `aquote-router --help` | PASS |
-| `aquote-router probe-pytdx --help` | PASS |
-| `aquote-router kline --help` | PASS |
-| `aquote-router diagnose --json` | PASS |
+| `pip install --upgrade pyqauto -i https://pypi.org/simple` installs `0.2.1` | PASS |
+| `import pyqauto; print(pyqauto.__version__)` | PASS |
+| `from pyqauto import QuoteRouter` | PASS |
+| `pyqauto --help` | PASS |
+| `pyqauto probe-pytdx --help` | PASS |
+| `pyqauto kline --help` | PASS |
+| `pyqauto diagnose --json` | PASS |
 
 ## Notes
 

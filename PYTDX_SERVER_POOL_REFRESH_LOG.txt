@@ -1,7 +1,7 @@
 Task 018.1 pytdx server pool refresh log
 
 Path audit
-- Located repository root: aquote-router
+- Located repository root: pyqauto
 - Parent workspace had Task018 live_check files and audit artifacts.
 - Copied scripts/live_check.py into scripts/live_check.py.
 - Copied docs/LIVE_CHECK.md into docs/LIVE_CHECK.md.
@@ -37,15 +37,15 @@ Live check result
 - JSONL and SQLite audit outputs were generated.
 
 CLI checks
-- aquote-router diagnose --json: PASS.
-- aquote-router realtime 000001 600000 --json: PASS with default config, fallback source easyquotation_sina.
-- aquote-router index 399001 --json: PASS with default config, fallback source easyquotation_sina.
-- aquote-router kline 000001 --period 15m --count 10 --json: FAIL with default config because the default example pytdx server pool timed out.
-- aquote-router kline 000001 --period 1d --count 10 --json: FAIL with default config because the default example pytdx server pool timed out.
-- aquote-router --pytdx-servers config\pytdx_servers.active.local.json realtime 000001 600000 --json: PASS.
-- aquote-router --pytdx-servers config\pytdx_servers.active.local.json index 399001 --json: PASS.
-- aquote-router --pytdx-servers config\pytdx_servers.active.local.json kline 000001 --period 15m --count 10 --json: PASS.
-- aquote-router --pytdx-servers config\pytdx_servers.active.local.json kline 000001 --period 1d --count 10 --json: PASS.
+- pyqauto diagnose --json: PASS.
+- pyqauto realtime 000001 600000 --json: PASS with default config, fallback source easyquotation_sina.
+- pyqauto index 399001 --json: PASS with default config, fallback source easyquotation_sina.
+- pyqauto kline 000001 --period 15m --count 10 --json: FAIL with default config because the default example pytdx server pool timed out.
+- pyqauto kline 000001 --period 1d --count 10 --json: FAIL with default config because the default example pytdx server pool timed out.
+- pyqauto --pytdx-servers config\pytdx_servers.active.local.json realtime 000001 600000 --json: PASS.
+- pyqauto --pytdx-servers config\pytdx_servers.active.local.json index 399001 --json: PASS.
+- pyqauto --pytdx-servers config\pytdx_servers.active.local.json kline 000001 --period 15m --count 10 --json: PASS.
+- pyqauto --pytdx-servers config\pytdx_servers.active.local.json kline 000001 --period 1d --count 10 --json: PASS.
 
 Release decision
 - v0.2.1 is not required.

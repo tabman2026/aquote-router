@@ -2,11 +2,11 @@ from __future__ import annotations
 
 import pytest
 
-from aquote_router.adapters.base import BaseQuoteAdapter
-from aquote_router.exceptions import NoAvailableSourceError, SourceUnavailableError
-from aquote_router.models import KlineBar, QuoteRecord
-from aquote_router.policy import SourcePolicy
-from aquote_router.router import QuoteRouter
+from pyqauto.adapters.base import BaseQuoteAdapter
+from pyqauto.exceptions import NoAvailableSourceError, SourceUnavailableError
+from pyqauto.models import KlineBar, QuoteRecord
+from pyqauto.policy import SourcePolicy
+from pyqauto.router import QuoteRouter
 
 
 class FakeAdapter(BaseQuoteAdapter):

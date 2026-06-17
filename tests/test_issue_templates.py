@@ -22,7 +22,7 @@ def test_issue_templates_request_trace_and_diagnose_json() -> None:
     )
 
     for field in [
-        "aquote-router version",
+        "pyqauto version",
         "Python version",
         "Operating system",
         "command",
@@ -44,7 +44,7 @@ def test_data_source_failure_template_has_required_fields() -> None:
     text = (TEMPLATE_DIR / "data_source_failure.yml").read_text(encoding="utf-8")
 
     for field in [
-        "aquote-router version",
+        "pyqauto version",
         "Python version",
         "Operating system",
         "Executed command",

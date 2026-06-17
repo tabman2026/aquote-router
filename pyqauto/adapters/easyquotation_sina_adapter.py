@@ -4,14 +4,14 @@ from __future__ import annotations
 
 from typing import Any
 
-from aquote_router.adapters.base import (
+from pyqauto.adapters.base import (
     BaseQuoteAdapter,
     as_float,
     code_for_symbol,
     first_value,
 )
-from aquote_router.exceptions import AdapterError, ErrorCode, SourceUnavailableError
-from aquote_router.models import QuoteRecord
+from pyqauto.exceptions import AdapterError, ErrorCode, SourceUnavailableError
+from pyqauto.models import QuoteRecord
 
 
 class EasyQuotationSinaAdapter(BaseQuoteAdapter):

@@ -6,12 +6,12 @@ Use this checklist to keep issue triage, patches, and releases consistent.
 
 1. Start with the reported `trace_id`.
 2. Match the `trace_id` to JSONL or SQLite audit records.
-3. For data source failures, inspect `aquote-router diagnose --json` output
+3. For data source failures, inspect `pyqauto diagnose --json` output
    before assuming a package bug.
 4. For K-line failures, ask the user to run:
 
 ```bash
-aquote-router probe-pytdx --json --output config/pytdx_servers.active.local.json
+pyqauto probe-pytdx --json --output config/pytdx_servers.active.local.json
 ```
 
 5. Check whether the failing API is realtime or K-line. Realtime can use
@@ -50,9 +50,9 @@ On Windows, run `chcp 65001 >nul` first.
 Also check:
 
 ```bash
-aquote-router --help
-aquote-router diagnose --json
-aquote-router probe-pytdx --help
+pyqauto --help
+pyqauto diagnose --json
+pyqauto probe-pytdx --help
 ```
 
 Live smoke checks must stay opt-in:

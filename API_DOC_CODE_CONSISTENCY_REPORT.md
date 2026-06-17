@@ -4,12 +4,12 @@ Date: 2026-06-15
 
 Scope:
 
-- `aquote_router/router.py`
-- `aquote_router/models.py`
-- `aquote_router/adapters/pytdx_adapter.py`
-- `aquote_router/policy.py`
-- `aquote_router/cli.py`
-- `aquote_router/diagnostics.py`
+- `pyqauto/router.py`
+- `pyqauto/models.py`
+- `pyqauto/adapters/pytdx_adapter.py`
+- `pyqauto/policy.py`
+- `pyqauto/cli.py`
+- `pyqauto/diagnostics.py`
 - `docs/API_REFERENCE.md`
 - `docs/KLINE_GUIDE.md`
 - `docs/DATA_SOURCES.md`

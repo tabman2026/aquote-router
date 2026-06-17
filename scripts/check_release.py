@@ -1,4 +1,4 @@
-"""Release leak scanner for aquote-router."""
+"""Release leak scanner for pyqauto."""
 
 from __future__ import annotations
 
@@ -41,8 +41,8 @@ SKIP_DIRS = {
     ".pytest_cache",
     ".ruff_cache",
     ".venv",
-    ".venv_aquote_router_v020_check",
-    ".venv_aquote_router_v021_check",
+    ".venv_pyqauto_check",
+    ".venv_pyqauto_v030_check",
     "__pycache__",
     "build",
     "dist",
@@ -57,6 +57,9 @@ SAFE_CONTEXT_MARKERS = [
     "without",
     "no ",
     "not ",
+    "not allowed",
+    "not requested",
+    "not used",
     "id-token",
     "trusted publishing",
     "forbidden",
@@ -67,6 +70,10 @@ SAFE_CONTEXT_MARKERS = [
     "不输出",
     "不保存",
     "不创建",
+    "不允许",
+    "未使用",
+    "未要求",
+    "否",
     "不发布",
     "不对外",
     "禁止",

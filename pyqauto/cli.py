@@ -1,4 +1,4 @@
-"""Command line interface for aquote-router."""
+"""Command line interface for pyqauto."""
 
 from __future__ import annotations
 
@@ -8,22 +8,23 @@ from typing import Any
 
 import click
 
-from aquote_router import __version__
-from aquote_router.diagnostics import build_diagnostics
-from aquote_router.exceptions import QuoteRouterError
-from aquote_router.pytdx_probe import (
+from pyqauto import __version__
+from pyqauto.diagnostics import build_diagnostics
+from pyqauto.exceptions import QuoteRouterError
+from pyqauto.policy import DEFAULT_PYTDX_SERVERS_PATH, DEFAULT_SOURCE_POLICY_PATH
+from pyqauto.pytdx_probe import (
     DEFAULT_CONFIG as DEFAULT_PROBE_CONFIG,
 )
-from aquote_router.pytdx_probe import (
+from pyqauto.pytdx_probe import (
     DEFAULT_OUTPUT as DEFAULT_PROBE_OUTPUT,
 )
-from aquote_router.pytdx_probe import (
+from pyqauto.pytdx_probe import (
     run_probe,
 )
-from aquote_router.router import QuoteRouter
+from pyqauto.router import QuoteRouter
 
-DEFAULT_PYTDX_SERVERS = "config/pytdx_servers.example.json"
-DEFAULT_SOURCE_POLICY = "config/source_policy.example.yaml"
+DEFAULT_PYTDX_SERVERS = DEFAULT_PYTDX_SERVERS_PATH
+DEFAULT_SOURCE_POLICY = DEFAULT_SOURCE_POLICY_PATH
 
 
 @click.group(context_settings={"help_option_names": ["-h", "--help"]})

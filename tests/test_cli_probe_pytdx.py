@@ -9,7 +9,7 @@ ROOT = Path(__file__).resolve().parents[1]
 
 def run_cli(*args: str) -> subprocess.CompletedProcess[str]:
     return subprocess.run(
-        [sys.executable, "-X", "utf8", "-m", "aquote_router.cli", *args],
+        [sys.executable, "-X", "utf8", "-m", "pyqauto.cli", *args],
         cwd=ROOT,
         capture_output=True,
         text=True,

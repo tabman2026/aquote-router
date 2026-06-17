@@ -19,15 +19,15 @@ scripts\windows_acceptance.bat
 ## GitHub
 
 - Confirm CI passes on Python 3.10, 3.11 and 3.12.
-- Create tag `v0.2.1`.
+- Create tag `v0.3.0`.
 - Create a GitHub Release from `CHANGELOG.md`.
 
 ## PyPI
 
 Use PyPI Trusted Publishing with:
 
-- PyPI project name: `aquote-router`
-- Repository name: `aquote-router`
+- PyPI project name: `pyqauto`
+- Repository name: `pyqauto`
 - Workflow file: `publish.yml`
 - Environment: `pypi`
 - Tag pattern: `v*`

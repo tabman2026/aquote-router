@@ -10,7 +10,7 @@ ROOT = Path(__file__).resolve().parents[1]
 
 def test_diagnose_help_can_run() -> None:
     result = subprocess.run(
-        [sys.executable, "-X", "utf8", "-m", "aquote_router.cli", "diagnose", "--help"],
+        [sys.executable, "-X", "utf8", "-m", "pyqauto.cli", "diagnose", "--help"],
         cwd=ROOT,
         capture_output=True,
         text=True,
@@ -25,7 +25,7 @@ def test_diagnose_help_can_run() -> None:
 
 def test_diagnose_json_can_run_and_has_required_fields() -> None:
     result = subprocess.run(
-        [sys.executable, "-X", "utf8", "-m", "aquote_router.cli", "diagnose", "--json"],
+        [sys.executable, "-X", "utf8", "-m", "pyqauto.cli", "diagnose", "--json"],
         cwd=ROOT,
         capture_output=True,
         text=True,
@@ -38,7 +38,7 @@ def test_diagnose_json_can_run_and_has_required_fields() -> None:
     payload = json.loads(result.stdout)
 
     for key in [
-        "aquote_router_version",
+        "pyqauto_version",
         "python_version",
         "os",
         "config_files",

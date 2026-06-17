@@ -1,6 +1,6 @@
 # Upstream License and Risk
 
-`aquote-router` calls public Python libraries through adapters. It does not produce market data and does not claim official exchange-authorized data.
+`pyqauto` calls public Python libraries through adapters. It does not produce market data and does not claim official exchange-authorized data.
 
 Current upstream dependencies:
 

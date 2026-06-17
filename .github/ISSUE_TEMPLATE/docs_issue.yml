@@ -27,7 +27,7 @@ body:
   - type: input
     id: version
     attributes:
-      label: aquote-router version
+      label: pyqauto version
       placeholder: "0.2.0"
   - type: textarea
     id: diagnose

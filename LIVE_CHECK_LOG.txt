@@ -88,10 +88,10 @@ Source policy config: config/source_policy.example.yaml
 [API] END kline(399001, period=1d, count=10) status=PASS rows=10 reason=live_source_ok duration_ms=161.022 trace_ids=['b89fa6798f9445fe8d8932b429d50d8e']
 [API] AUDIT kline(399001, period=1d, count=10) records=[{"trace_id": "b89fa6798f9445fe8d8932b429d50d8e", "api_name": "kline", "selected_source": "pytdx", "selected_source_level": "primary", "success": true, "error_type": null, "record_count": 10}]
 
-[CLI] START aquote-router diagnose --json
-[CLI] END aquote-router diagnose --json status=PASS returncode=0 rows=0 reason=cli_ok duration_ms=1209.53 trace_ids=[]
-[CLI] STDOUT aquote-router diagnose --json: {
-  "aquote_router_version": "0.2.0",
+[CLI] START pyqauto diagnose --json
+[CLI] END pyqauto diagnose --json status=PASS returncode=0 rows=0 reason=cli_ok duration_ms=1209.53 trace_ids=[]
+[CLI] STDOUT pyqauto diagnose --json: {
+  "pyqauto_version": "0.2.0",
   "python_version": "3.14.5",
   "python_executable": "<configured>",
   "os": "Windows-10-10.0.19045-SP0",
@@ -140,9 +140,9 @@ Source policy config: config/source_policy.example.yaml
   "recent_trace_id": "b89fa6798f9445fe8d8932b429d50d8e"
 }
 
-[CLI] START aquote-router realtime 000001 600000 --json
-[CLI] END aquote-router realtime 000001 600000 --json status=PASS returncode=0 rows=2 reason=cli_ok duration_ms=3375.232 trace_ids=['ec5d58aa755b4d7b9eeed54b82845803']
-[CLI] STDOUT aquote-router realtime 000001 600000 --json: [
+[CLI] START pyqauto realtime 000001 600000 --json
+[CLI] END pyqauto realtime 000001 600000 --json status=PASS returncode=0 rows=2 reason=cli_ok duration_ms=3375.232 trace_ids=['ec5d58aa755b4d7b9eeed54b82845803']
+[CLI] STDOUT pyqauto realtime 000001 600000 --json: [
   {
     "symbol": "000001",
     "name": null,
@@ -181,9 +181,9 @@ Source policy config: config/source_policy.example.yaml
   }
 ]
 
-[CLI] START aquote-router index 399001 --json
-[CLI] END aquote-router index 399001 --json status=PASS returncode=0 rows=1 reason=cli_ok duration_ms=3440.195 trace_ids=['ae88b619abc249e4871501e1e4aa3901']
-[CLI] STDOUT aquote-router index 399001 --json: [
+[CLI] START pyqauto index 399001 --json
+[CLI] END pyqauto index 399001 --json status=PASS returncode=0 rows=1 reason=cli_ok duration_ms=3440.195 trace_ids=['ae88b619abc249e4871501e1e4aa3901']
+[CLI] STDOUT pyqauto index 399001 --json: [
   {
     "symbol": "399001",
     "name": null,
@@ -204,9 +204,9 @@ Source policy config: config/source_policy.example.yaml
   }
 ]
 
-[CLI] START aquote-router kline 000001 --period 15m --count 10 --json
-[CLI] END aquote-router kline 000001 --period 15m --count 10 --json status=PASS returncode=0 rows=10 reason=cli_ok duration_ms=3468.562 trace_ids=['a76d1511c0284f518cc0803141dfe582']
-[CLI] STDOUT aquote-router kline 000001 --period 15m --count 10 --json: [
+[CLI] START pyqauto kline 000001 --period 15m --count 10 --json
+[CLI] END pyqauto kline 000001 --period 15m --count 10 --json status=PASS returncode=0 rows=10 reason=cli_ok duration_ms=3468.562 trace_ids=['a76d1511c0284f518cc0803141dfe582']
+[CLI] STDOUT pyqauto kline 000001 --period 15m --count 10 --json: [
   {
     "symbol": "000001",
     "datetime": "2026-06-15 11:15",
@@ -295,9 +295,9 @@ Source policy config: config/source_policy.example.yaml
   {
     "symbol": "000001",...<truncated>
 
-[CLI] START aquote-router kline 000001 --period 1d --count 10 --json
-[CLI] END aquote-router kline 000001 --period 1d --count 10 --json status=PASS returncode=0 rows=10 reason=cli_ok duration_ms=3456.624 trace_ids=['09fab7f466dc4f2b824a95959d2246b6']
-[CLI] STDOUT aquote-router kline 000001 --period 1d --count 10 --json: [
+[CLI] START pyqauto kline 000001 --period 1d --count 10 --json
+[CLI] END pyqauto kline 000001 --period 1d --count 10 --json status=PASS returncode=0 rows=10 reason=cli_ok duration_ms=3456.624 trace_ids=['09fab7f466dc4f2b824a95959d2246b6']
+[CLI] STDOUT pyqauto kline 000001 --period 1d --count 10 --json: [
   {
     "symbol": "000001",
     "datetime": "2026-06-02 15:00",

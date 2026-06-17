@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from typing import Any
 
-from aquote_router.adapters.base import (
+from pyqauto.adapters.base import (
     BaseQuoteAdapter,
     PytdxServer,
     as_float,
@@ -12,14 +12,14 @@ from aquote_router.adapters.base import (
     first_value,
     market_for_symbol,
 )
-from aquote_router.exceptions import (
+from pyqauto.exceptions import (
     AdapterError,
     ErrorCode,
     SourceUnavailableError,
     UnsupportedPeriodError,
 )
-from aquote_router.models import KlineBar, QuoteRecord
-from aquote_router.policy import (
+from pyqauto.models import KlineBar, QuoteRecord
+from pyqauto.policy import (
     SUPPORTED_DAILY_KLINE_PERIODS,
     SUPPORTED_MINUTE_KLINE_PERIODS,
 )

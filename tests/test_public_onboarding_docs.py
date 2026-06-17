@@ -24,8 +24,8 @@ def test_issue_guide_requests_diagnostics_and_sanitized_logs() -> None:
     text = (ROOT / "docs" / "ISSUE_GUIDE.md").read_text(encoding="utf-8")
 
     for expected in [
-        "aquote-router diagnose --json",
-        "aquote-router probe-pytdx --json",
+        "pyqauto diagnose --json",
+        "pyqauto probe-pytdx --json",
         "trace_id",
         "Sanitizing Audit Logs",
         "Upstream Source or Package Problem?",

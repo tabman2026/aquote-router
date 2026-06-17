@@ -4,12 +4,18 @@ from __future__ import annotations
 
 import json
 from dataclasses import dataclass
+from importlib.resources import files
 from pathlib import Path
 from typing import Any
 
-from aquote_router.adapters.base import PytdxServer
-from aquote_router.exceptions import ConfigurationError, ErrorCode, SourcePolicyError
+from pyqauto.adapters.base import PytdxServer
+from pyqauto.exceptions import ConfigurationError, ErrorCode, SourcePolicyError
 
+DEFAULT_PYTDX_SERVERS_PATH = "config/pytdx_servers.example.json"
+DEFAULT_SOURCE_POLICY_PATH = "config/source_policy.example.yaml"
+PACKAGED_CONFIG_PACKAGE = "pyqauto.config"
+PYTDX_SERVERS_RESOURCE = "pytdx_servers.example.json"
+SOURCE_POLICY_RESOURCE = "source_policy.example.yaml"
 ROLE_ORDER = {"primary": 0, "hot_backup": 1, "backup": 2}
 SUPPORTED_APIS = {
     "realtime_quotes",
@@ -103,33 +109,21 @@ class SourcePolicy:
             raise SourcePolicyError(f"unsupported API: {api_name}") from exc
 
 
-def load_source_policy(path: str | Path) -> SourcePolicy:
+def load_source_policy(path: str | Path | None = None) -> SourcePolicy:
     """Load and validate source policy from YAML."""
 
-    data = _load_yaml(Path(path))
+    data = _load_yaml_text(read_source_policy_text(path))
     return SourcePolicy.from_dict(data)
 
 
-def load_pytdx_servers(path: str | Path) -> list[PytdxServer]:
+def load_pytdx_servers(path: str | Path | None = None) -> list[PytdxServer]:
     """Load enabled pytdx servers sorted by role and latency."""
 
-    config_path = Path(path)
-    if not config_path.exists():
-        raise ConfigurationError(
-            "pytdx server config file was not found",
-            code=ErrorCode.CONFIG_NOT_FOUND,
-        )
-
     try:
-        raw = json.loads(config_path.read_text(encoding="utf-8"))
+        raw = json.loads(read_pytdx_servers_text(path))
     except json.JSONDecodeError as exc:
         raise ConfigurationError(
             "pytdx server config is not valid JSON",
-            code=ErrorCode.CONFIG_PARSE_FAILED,
-        ) from exc
-    except OSError as exc:
-        raise ConfigurationError(
-            "pytdx server config could not be read",
             code=ErrorCode.CONFIG_PARSE_FAILED,
         ) from exc
 
@@ -174,20 +168,35 @@ def load_pytdx_servers(path: str | Path) -> list[PytdxServer]:
     return sorted(servers, key=lambda server: (ROLE_ORDER[server.role], server.latency_ms))
 
 
-def _load_yaml(path: Path) -> dict[str, Any]:
-    if not path.exists():
-        raise ConfigurationError(
-            "source policy file was not found",
-            code=ErrorCode.SOURCE_POLICY_NOT_FOUND,
-        )
+def read_source_policy_text(path: str | Path | None = None) -> str:
+    """Read source policy YAML from a path or the bundled default resource."""
 
-    try:
-        text = path.read_text(encoding="utf-8")
-    except OSError as exc:
-        raise SourcePolicyError(
-            "source policy file could not be read",
-            code=ErrorCode.SOURCE_POLICY_INVALID,
-        ) from exc
+    return _read_config_text(
+        path,
+        default_path=DEFAULT_SOURCE_POLICY_PATH,
+        resource_name=SOURCE_POLICY_RESOURCE,
+        not_found_message="source policy file was not found",
+        not_found_code=ErrorCode.SOURCE_POLICY_NOT_FOUND,
+        read_error_message="source policy file could not be read",
+        read_error_code=ErrorCode.SOURCE_POLICY_INVALID,
+    )
+
+
+def read_pytdx_servers_text(path: str | Path | None = None) -> str:
+    """Read pytdx server JSON from a path or the bundled default resource."""
+
+    return _read_config_text(
+        path,
+        default_path=DEFAULT_PYTDX_SERVERS_PATH,
+        resource_name=PYTDX_SERVERS_RESOURCE,
+        not_found_message="pytdx server config file was not found",
+        not_found_code=ErrorCode.CONFIG_NOT_FOUND,
+        read_error_message="pytdx server config could not be read",
+        read_error_code=ErrorCode.CONFIG_PARSE_FAILED,
+    )
+
+
+def _load_yaml_text(text: str) -> dict[str, Any]:
     try:
         import yaml
     except Exception:
@@ -203,6 +212,54 @@ def _load_yaml(path: Path) -> dict[str, Any]:
     if not isinstance(data, dict):
         raise SourcePolicyError("source policy YAML must be a mapping")
     return data
+
+
+def _read_config_text(
+    path: str | Path | None,
+    *,
+    default_path: str,
+    resource_name: str,
+    not_found_message: str,
+    not_found_code: ErrorCode,
+    read_error_message: str,
+    read_error_code: ErrorCode,
+) -> str:
+    if path is None:
+        return _read_packaged_config(resource_name, read_error_message, read_error_code)
+
+    config_path = Path(path)
+    if config_path.exists():
+        try:
+            return config_path.read_text(encoding="utf-8")
+        except OSError as exc:
+            raise ConfigurationError(
+                read_error_message,
+                code=read_error_code,
+            ) from exc
+
+    if _is_default_config_path(config_path, default_path):
+        return _read_packaged_config(resource_name, read_error_message, read_error_code)
+
+    raise ConfigurationError(not_found_message, code=not_found_code)
+
+
+def _read_packaged_config(
+    resource_name: str,
+    read_error_message: str,
+    read_error_code: ErrorCode,
+) -> str:
+    try:
+        return (
+            files(PACKAGED_CONFIG_PACKAGE)
+            .joinpath(resource_name)
+            .read_text(encoding="utf-8")
+        )
+    except (FileNotFoundError, OSError) as exc:
+        raise ConfigurationError(read_error_message, code=read_error_code) from exc
+
+
+def _is_default_config_path(path: Path, default_path: str) -> bool:
+    return str(path).replace("\\", "/") == default_path
 
 
 def _load_simple_policy_yaml(text: str) -> dict[str, Any]:

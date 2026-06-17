@@ -1,9 +1,31 @@
 # Changelog
 
+## 0.3.0 - 2026-06-18
+
+- Renamed the PyPI package, Python import package, CLI command, and GitHub
+  repository to `pyqauto`.
+- Replaced the former `aquote-router` package name and `aquote_router` import
+  path with `pyqauto`.
+- Kept the public quote, K-line, source policy, diagnostics, and audit behavior
+  unchanged.
+- Added migration documentation for users moving from the old package name.
+- Kept the release path on GitHub Actions Trusted Publishing only; no local
+  twine upload or password-based PyPI publishing is used.
+
+## 0.2.2 - 2026-06-17
+
+- Bundled default source policy and pytdx server config as package data.
+- Added the short `aquote` import alias and simple module-level functions such as
+  `quote`, `quotes`, `kline`, and `daily`.
+- Allowed `QuoteRouter.from_config()` to run without user-supplied config paths.
+- Preserved compatibility for legacy `config/source_policy.example.yaml` and
+  `config/pytdx_servers.example.json` example paths when local files are absent.
+- Updated public examples and quickstart docs to avoid requiring copied config files.
+
 ## 0.2.1 - 2026-06-15
 
 - Added and documented pytdx server probe diagnostics.
-- Added `aquote-router probe-pytdx`.
+- Added `pyqauto probe-pytdx`.
 - Strengthened K-line timeout troubleshooting docs.
 - Strengthened live check docs for active local pytdx pools.
 - Clarified that active local server pools are not committed to Git.
@@ -16,7 +38,7 @@
 - Documented all supported minute K-line periods including `15m`.
 - Added `DATA_SOURCES`, `API_REFERENCE`, `KLINE_GUIDE`, `RETURN_FIELDS`, and `CLI_REFERENCE`.
 - Added troubleshooting, error code, symbol, time, unit, upstream risk, roadmap and adapter contributor docs.
-- Added stable error codes and enhanced `aquote-router diagnose --json`.
+- Added stable error codes and enhanced `pyqauto diagnose --json`.
 - Added issue templates for bug reports, data source failures, adapter requests and documentation issues.
 - Added offline tests for open-source maintenance and diagnostics workflows.
 

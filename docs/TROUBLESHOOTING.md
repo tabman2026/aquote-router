@@ -3,13 +3,13 @@
 Start with local diagnostics:
 
 ```bash
-aquote-router diagnose --json
+pyqauto diagnose --json
 ```
 
 The command does not connect to upstream providers. It checks local config shape
 and returns fields such as:
 
-- `aquote_router_version`
+- `pyqauto_version`
 - `source_policy_parseable`
 - `source_policy_error_code`
 - `pytdx_server_config_parseable`
@@ -20,8 +20,9 @@ and returns fields such as:
 
 ## Common Checks
 
-- Confirm `config/source_policy.example.yaml` parses.
-- Confirm `config/pytdx_servers.example.json` contains enabled servers.
+- Run `pyqauto diagnose --json` to confirm bundled or overridden config parses.
+- If you pass custom config paths, confirm the source policy parses and pytdx
+  config contains enabled servers.
 - Use `--json` on quote commands when table output is too narrow.
 - Use audit `trace_id` to match CLI output to JSONL or SQLite records.
 - For K-line failures, inspect pytdx attempts. K-line APIs do not use
@@ -36,13 +37,13 @@ easyquotation fallback.
 If K-line calls time out, refresh a local active pytdx pool:
 
 ```bash
-aquote-router probe-pytdx --json --output config/pytdx_servers.active.local.json
+pyqauto probe-pytdx --json --output config/pytdx_servers.active.local.json
 ```
 
 Then pass that pool explicitly:
 
 ```bash
-aquote-router kline 000001 --period 15m --count 10 \
+pyqauto kline 000001 --period 15m --count 10 \
   --pytdx-servers config/pytdx_servers.active.local.json --json
 ```
 

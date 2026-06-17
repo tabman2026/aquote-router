@@ -1,4 +1,4 @@
-"""Exception types and stable error codes for aquote-router."""
+"""Exception types and stable error codes for pyqauto."""
 
 from __future__ import annotations
 

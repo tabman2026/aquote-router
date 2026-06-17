@@ -1,6 +1,6 @@
-# aquote-router Live Check
+# pyqauto Live Check
 
-`scripts/live_check.py` is a local manual diagnostic tool for aquote-router
+`scripts/live_check.py` is a local manual diagnostic tool for pyqauto
 real data sources. It is intentionally kept outside GitHub Actions CI because
 it connects to public upstream quote sources and may fail because of network,
 provider, market-hour, or upstream availability conditions.
@@ -15,7 +15,7 @@ The live check covers:
 - `minute_kline` with `1m`, `15m`, and `60m`
 - `daily_kline`
 - unified `kline` with `15m` and `1d`
-- `aquote-router diagnose --json`
+- `pyqauto diagnose --json`
 
 Test symbols are `000001`, `600000`, and `399001`.
 
@@ -62,7 +62,7 @@ The script writes:
 All JSON and JSONL files are written as UTF-8 with `ensure_ascii=False`.
 
 `config\pytdx_servers.active.local.json` is a local diagnostic input generated
-by `aquote-router probe-pytdx` or `scripts\pytdx_server_probe.py`. It is
+by `pyqauto probe-pytdx` or `scripts\pytdx_server_probe.py`. It is
 intentionally ignored by git because free pytdx server availability changes by
 network, region, and time. A local active pool is an observed diagnostic result,
 not a long-term stable official server list.
@@ -70,26 +70,26 @@ not a long-term stable official server list.
 If K-line calls time out, refresh the local pool first:
 
 ```bat
-aquote-router probe-pytdx --json --output config\pytdx_servers.active.local.json
+pyqauto probe-pytdx --json --output config\pytdx_servers.active.local.json
 ```
 
 Then run K-line checks with the active local pool:
 
 ```bat
-aquote-router kline 000001 --period 15m --count 10 --pytdx-servers config\pytdx_servers.active.local.json --json
+pyqauto kline 000001 --period 15m --count 10 --pytdx-servers config\pytdx_servers.active.local.json --json
 ```
 
 ## CLI Checks
 
-When the `aquote-router` console script is available, the live check also runs
+When the `pyqauto` console script is available, the live check also runs
 CLI diagnostics with explicit audit paths:
 
 ```bat
-aquote-router diagnose --json
-aquote-router realtime 000001 600000 --json
-aquote-router index 399001 --json
-aquote-router kline 000001 --period 15m --count 10 --json
-aquote-router kline 000001 --period 1d --count 10 --json
+pyqauto diagnose --json
+pyqauto realtime 000001 600000 --json
+pyqauto index 399001 --json
+pyqauto kline 000001 --period 15m --count 10 --json
+pyqauto kline 000001 --period 1d --count 10 --json
 ```
 
 ## Boundaries

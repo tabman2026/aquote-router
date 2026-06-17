@@ -6,7 +6,7 @@ body:
   - type: input
     id: version
     attributes:
-      label: aquote-router version
+      label: pyqauto version
       placeholder: "0.2.0"
     validations:
       required: true
@@ -28,7 +28,7 @@ body:
     id: command
     attributes:
       label: Executed command
-      placeholder: "aquote-router realtime 000001"
+      placeholder: "pyqauto realtime 000001"
     validations:
       required: true
   - type: input
@@ -70,14 +70,14 @@ body:
     id: diagnose_json
     attributes:
       label: diagnose --json output
-      description: Paste sanitized output from aquote-router diagnose --json. Do not include token, cookie, secret, account data, or private paths.
+      description: Paste sanitized output from pyqauto diagnose --json. Do not include token, cookie, secret, account data, or private paths.
     validations:
       required: true
   - type: textarea
     id: probe_pytdx
     attributes:
       label: probe-pytdx output
-      description: For K-line issues, run aquote-router probe-pytdx --json --output config/pytdx_servers.active.local.json and paste sanitized output. For non-K-line issues, write N/A.
+      description: For K-line issues, run pyqauto probe-pytdx --json --output config/pytdx_servers.active.local.json and paste sanitized output. For non-K-line issues, write N/A.
     validations:
       required: true
   - type: dropdown

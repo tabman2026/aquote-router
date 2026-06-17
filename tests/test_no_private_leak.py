@@ -30,13 +30,13 @@ def test_readme_contains_required_boundary() -> None:
 def test_pyproject_package_names() -> None:
     pyproject = (ROOT / "pyproject.toml").read_text(encoding="utf-8")
 
-    assert 'name = "aquote-router"' in pyproject
-    assert 'aquote-router = "aquote_router.cli:main"' in pyproject
+    assert 'name = "pyqauto"' in pyproject
+    assert 'pyqauto = "pyqauto.cli:main"' in pyproject
 
 
 def test_cli_can_start() -> None:
     result = subprocess.run(
-        [sys.executable, "-X", "utf8", "-m", "aquote_router.cli", "--help"],
+        [sys.executable, "-X", "utf8", "-m", "pyqauto.cli", "--help"],
         cwd=ROOT,
         capture_output=True,
         text=True,

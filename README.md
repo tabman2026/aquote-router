@@ -1,14 +1,30 @@
-# aquote-router
+# pyqauto
 
-[![PyPI version](https://img.shields.io/pypi/v/aquote-router.svg)](https://pypi.org/project/aquote-router/)
-[![Python versions](https://img.shields.io/pypi/pyversions/aquote-router.svg)](https://pypi.org/project/aquote-router/)
-[![CI](https://github.com/tabman2026/aquote-router/actions/workflows/ci.yml/badge.svg)](https://github.com/tabman2026/aquote-router/actions/workflows/ci.yml)
+pyqauto 是一个面向 A 股行情获取的 Python 行情源自动选择工具，支持 pytdx 主备切换、easyquotation fallback、实时行情、分钟K线、日K、统一 kline 接口、source policy 和 JSONL / SQLite 审计追踪。
+
+Python A-share quote auto-selector with pytdx failover, easyquotation fallback, K-line APIs and audit trail.
+
+```bash
+python -X utf8 -m pip install pyqauto -i https://pypi.org/simple
+```
+
+```python
+from pyqauto import QuoteRouter
+```
+
+```bash
+pyqauto realtime 000001 600000
+pyqauto kline 000001 --period 15m --count 10
+pyqauto probe-pytdx --json
+```
+
+本项目不提供投资建议，不生成候选股池，不生成买卖点，不接入真实交易，不保证公开免费行情源 100% 准确、实时、完整、可用。
+
+[![PyPI version](https://img.shields.io/pypi/v/pyqauto.svg)](https://pypi.org/project/pyqauto/)
+[![Python versions](https://img.shields.io/pypi/pyversions/pyqauto.svg)](https://pypi.org/project/pyqauto/)
+[![CI](https://github.com/tabman2026/pyqauto/actions/workflows/ci.yml/badge.svg)](https://github.com/tabman2026/pyqauto/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![GitHub Release](https://img.shields.io/github/v/release/tabman2026/aquote-router?display_name=tag)](https://github.com/tabman2026/aquote-router/releases)
-
-aquote-router 是一个面向 A 股量化研究的轻量行情源路由器，支持 pytdx 主备切换、easyquotation fallback、实时行情、分钟K线、日K、统一 kline 接口、source policy 和 JSONL / SQLite 审计追踪。
-
-A-share quote source router with pytdx failover, easyquotation fallback, K-line APIs and audit trail.
+[![GitHub Release](https://img.shields.io/github/v/release/tabman2026/pyqauto?display_name=tag)](https://github.com/tabman2026/pyqauto/releases)
 
 It is designed for research scripts that need A股行情, A股实时行情, A股K线,
 分钟K线, 15分钟K线, 日K, source policy, 数据源 fallback, 行情审计, `trace_id`,
@@ -40,29 +56,25 @@ Examples: [realtime](examples/realtime_quotes_demo.py),
 ## Install
 
 ```bash
-python -X utf8 -m pip install aquote-router
+python -X utf8 -m pip install pyqauto
 ```
 
 ## Minimal Realtime Quote
 
 ```python
-from aquote_router import QuoteRouter
+import pyqauto as aq
 
-router = QuoteRouter.from_config(
-    pytdx_servers_path="config/pytdx_servers.example.json",
-    source_policy_path="config/source_policy.example.yaml",
-    audit_jsonl_path="logs/aquote_router_audit.jsonl",
-    audit_sqlite_path="logs/aquote_router_audit.sqlite3",
-)
-
-records = router.realtime_quotes(["000001"])
-print(records[0].to_dict())
+record = aq.quote("000001")
+print(record.to_dict())
 ```
+
+Default source policy and pytdx server config are bundled in the package.
+Import and call functions directly. No local config files are required.
 
 ## Minimal 15m K-line
 
 ```python
-bars = router.minute_kline("000001", period="15m", count=120)
+bars = aq.kline("000001", period="15m", count=120)
 print(bars[0].to_dict())
 ```
 
@@ -72,13 +84,13 @@ K-line APIs are pytdx-only. If a K-line call times out, first probe the pytdx
 server pool for the current network:
 
 ```bash
-aquote-router probe-pytdx --json --output config/pytdx_servers.active.local.json
+pyqauto probe-pytdx --json --output config/pytdx_servers.active.local.json
 ```
 
 Then pass the active local pool explicitly:
 
 ```bash
-aquote-router kline 000001 --period 15m --count 10 \
+pyqauto kline 000001 --period 15m --count 10 \
   --pytdx-servers config/pytdx_servers.active.local.json --json
 ```
 
@@ -108,16 +120,14 @@ python -X utf8 -m pip install -e ".[dev,test]"
 ## Quick Start
 
 ```python
-from aquote_router import QuoteRouter
+import pyqauto as aq
 
-router = QuoteRouter.from_config(
-    pytdx_servers_path="config/pytdx_servers.example.json",
-    source_policy_path="config/source_policy.example.yaml",
-    audit_jsonl_path="logs/aquote_router_audit.jsonl",
-    audit_sqlite_path="logs/aquote_router_audit.sqlite3",
+aq.configure(
+    audit_jsonl_path="logs/pyqauto_audit.jsonl",
+    audit_sqlite_path="logs/pyqauto_audit.sqlite3",
 )
 
-records = router.realtime_quotes(["000001", "600000"])
+records = aq.quotes(["000001", "600000"])
 for record in records:
     print(record.to_dict())
 ```
@@ -125,36 +135,39 @@ for record in records:
 K-line examples:
 
 ```python
-router.minute_kline("000001", period="15m", count=120)
-router.daily_kline("000001", count=120)
-router.kline("000001", period="1d", count=120)
+aq.minute("000001", period="15m", count=120)
+aq.daily("000001", count=120)
+aq.kline("000001", period="1d", count=120)
 ```
 
 ## Public API
 
 ```python
-router.realtime_quotes(["000001", "600000"])
-router.full_realtime_quotes(["000001", "600000"])
-router.index_realtime(["000001", "399001"])
-router.minute_kline("000001", period="15m", count=120)
-router.daily_kline("000001", count=120)
-router.kline("000001", period="1d", count=120)
-router.diagnose()
+aq.quote("000001")
+aq.quotes(["000001", "600000"])
+aq.full_quotes(["000001", "600000"])
+aq.index(["000001", "399001"])
+aq.minute("000001", period="15m", count=120)
+aq.daily("000001", count=120)
+aq.kline("000001", period="1d", count=120)
+aq.diagnose()
 ```
+
+For advanced use, `from pyqauto import QuoteRouter` remains available.
 
 ## CLI
 
 ```bash
-aquote-router realtime 000001 600000
-aquote-router full 000001 600000
-aquote-router full-realtime 000001 600000
-aquote-router index 000001 399001
-aquote-router minute 000001 --period 15m --count 120
-aquote-router daily 000001 --count 120
-aquote-router kline 000001 --period 15m --count 120
-aquote-router kline 000001 --period 1d --count 120
-aquote-router probe-pytdx --json --output config/pytdx_servers.active.local.json
-aquote-router diagnose --json
+pyqauto realtime 000001 600000
+pyqauto full 000001 600000
+pyqauto full-realtime 000001 600000
+pyqauto index 000001 399001
+pyqauto minute 000001 --period 15m --count 120
+pyqauto daily 000001 --count 120
+pyqauto kline 000001 --period 15m --count 120
+pyqauto kline 000001 --period 1d --count 120
+pyqauto probe-pytdx --json --output config/pytdx_servers.active.local.json
+pyqauto diagnose --json
 ```
 
 Use `--json` for complete output, especially when table columns are too wide.
@@ -163,13 +176,13 @@ CLI failures return a non-zero exit code and a structured project error code.
 When K-line calls time out, first refresh a local pytdx pool:
 
 ```bash
-aquote-router probe-pytdx --json --output config/pytdx_servers.active.local.json
+pyqauto probe-pytdx --json --output config/pytdx_servers.active.local.json
 ```
 
 Then pass the active local pool explicitly:
 
 ```bash
-aquote-router kline 000001 --period 15m --count 10 \
+pyqauto kline 000001 --period 15m --count 10 \
   --pytdx-servers config/pytdx_servers.active.local.json --json
 ```
 

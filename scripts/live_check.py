@@ -18,8 +18,8 @@ PACKAGE_ROOT = ROOT
 if str(PACKAGE_ROOT) not in sys.path:
     sys.path.insert(0, str(PACKAGE_ROOT))
 
-from aquote_router import QuoteRouter, __version__  # noqa: E402
-from aquote_router.exceptions import QuoteRouterError  # noqa: E402
+from pyqauto import QuoteRouter, __version__  # noqa: E402
+from pyqauto.exceptions import QuoteRouterError  # noqa: E402
 
 TEST_SYMBOLS = ["000001", "600000", "399001"]
 STOCK_SYMBOLS = ["000001", "600000"]
@@ -40,7 +40,7 @@ KLINE_API_NAMES = {"minute_kline", "daily_kline", "kline"}
 
 def main() -> int:
     parser = argparse.ArgumentParser(
-        description="Run local live checks for aquote-router real data sources."
+        description="Run local live checks for pyqauto real data sources."
     )
     parser.add_argument("--json", action="store_true", help="Print JSON summary.")
     parser.add_argument(
@@ -279,25 +279,25 @@ def _run_cli_checks(
     command_specs = [
         {
             "api_name": "diagnose",
-            "label": "aquote-router diagnose --json",
+            "label": "pyqauto diagnose --json",
             "args": ["diagnose", "--json"],
             "expects_records": False,
         },
         {
             "api_name": "realtime_quotes",
-            "label": "aquote-router realtime 000001 600000 --json",
+            "label": "pyqauto realtime 000001 600000 --json",
             "args": ["realtime", *STOCK_SYMBOLS, "--json"],
             "expects_records": True,
         },
         {
             "api_name": "index_realtime",
-            "label": "aquote-router index 399001 --json",
+            "label": "pyqauto index 399001 --json",
             "args": ["index", "399001", "--json"],
             "expects_records": True,
         },
         {
             "api_name": "kline",
-            "label": "aquote-router kline 000001 --period 15m --count 10 --json",
+            "label": "pyqauto kline 000001 --period 15m --count 10 --json",
             "args": ["kline", "000001", "--period", "15m", "--count", "10", "--json"],
             "expects_records": True,
             "expected_source": "pytdx",
@@ -305,23 +305,23 @@ def _run_cli_checks(
         },
         {
             "api_name": "kline",
-            "label": "aquote-router kline 000001 --period 1d --count 10 --json",
+            "label": "pyqauto kline 000001 --period 1d --count 10 --json",
             "args": ["kline", "000001", "--period", "1d", "--count", "10", "--json"],
             "expects_records": True,
             "expected_source": "pytdx",
             "expected_period": "1d",
         },
     ]
-    executable = shutil.which("aquote-router")
+    executable = shutil.which("pyqauto")
     command_prefix = (
         [executable]
         if executable
-        else [sys.executable, "-X", "utf8", "-m", "aquote_router.cli"]
+        else [sys.executable, "-X", "utf8", "-m", "pyqauto.cli"]
     )
     if not executable:
         log_lines.append(
-            "[CLI] INFO aquote-router console script not found on PATH; "
-            "using python -m aquote_router.cli"
+            "[CLI] INFO pyqauto console script not found on PATH; "
+            "using python -m pyqauto.cli"
         )
 
     results = []
@@ -502,7 +502,7 @@ def _build_summary(
     all_results = api_results + cli_results
     grouped = _group_statuses(api_results)
     cli_grouped = _group_statuses(cli_results)
-    package_metadata_version = _package_version("aquote-router")
+    package_metadata_version = _package_version("pyqauto")
     live_status = {
         "realtime_quotes": grouped.get("realtime_quotes", False),
         "full_realtime_quotes": grouped.get("full_realtime_quotes", False),
@@ -537,7 +537,7 @@ def _build_summary(
         "audit_conclusion": "JSONL and SQLite audit records were generated"
         if audit_status["jsonl_exists"] and audit_status["sqlite_exists"]
         else "audit outputs missing",
-        "requires_v0_2_1": False,
+        "requires_followup_fix": False,
         "no_public_api_change": True,
         "no_ci_integration": True,
         "kline_pytdx_only": _kline_results_are_pytdx_only(api_results),
@@ -550,7 +550,7 @@ def _build_summary(
         if result["status"] == "FAIL" and _is_probable_local_blocking_bug(result)
     ]
     if blocking_failures:
-        acceptance["requires_v0_2_1"] = True
+        acceptance["requires_followup_fix"] = True
         acceptance["blocking_failures"] = [
             {
                 "label": item["label"],
@@ -562,7 +562,7 @@ def _build_summary(
         ]
 
     return {
-        "task": "任务018",
+        "task": "任务021",
         "created_at": started_at.isoformat(),
         "finished_at": finished_at.isoformat(),
         "duration_seconds": round((finished_at - started_at).total_seconds(), 3),
@@ -573,11 +573,11 @@ def _build_summary(
             "python_executable": "<configured>",
             "python_version": platform.python_version(),
             "platform": platform.platform(),
-            "aquote_router_import_version": __version__,
-            "aquote_router_package_metadata_version": package_metadata_version,
-            "aquote_router_console": "aquote-router"
-            if shutil.which("aquote-router")
-            else "python -m aquote_router.cli",
+            "pyqauto_import_version": __version__,
+            "pyqauto_package_metadata_version": package_metadata_version,
+            "pyqauto_console": "pyqauto"
+            if shutil.which("pyqauto")
+            else "python -m pyqauto.cli",
         },
         "config": {
             "source_policy_path": _display_path(source_policy_path),
@@ -620,7 +620,7 @@ def _write_report(summary: dict[str, Any]) -> None:
         "",
         f"- Overall status: {acceptance['status']}",
         f"- Audit conclusion: {acceptance['audit_conclusion']}",
-        f"- Requires v0.2.1: {acceptance['requires_v0_2_1']}",
+        f"- Requires follow-up fix: {acceptance['requires_followup_fix']}",
         f"- K-line source rule: {'PASS' if acceptance['kline_pytdx_only'] else 'FAIL'}",
         "",
         "## Live Status",

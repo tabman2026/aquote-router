@@ -64,11 +64,11 @@ return promise, or investment advice workflow is included.
 | api | kline(000001, period=1d, count=10) | PASS | 10 | [{"source": "pytdx", "source_level": "primary"}] | d957b6b83f8947899926d290208605aa | live_source_ok |
 | api | kline(600000, period=1d, count=10) | PASS | 10 | [{"source": "pytdx", "source_level": "primary"}] | 330999bbc70449fdbf02d30c5a6fa67d | live_source_ok |
 | api | kline(399001, period=1d, count=10) | PASS | 10 | [{"source": "pytdx", "source_level": "primary"}] | b89fa6798f9445fe8d8932b429d50d8e | live_source_ok |
-| cli | aquote-router diagnose --json | PASS | 0 | [] |  | cli_ok |
-| cli | aquote-router realtime 000001 600000 --json | PASS | 2 | [{"source": "pytdx", "source_level": "primary"}] | ec5d58aa755b4d7b9eeed54b82845803 | cli_ok |
-| cli | aquote-router index 399001 --json | PASS | 1 | [{"source": "pytdx", "source_level": "primary"}] | ae88b619abc249e4871501e1e4aa3901 | cli_ok |
-| cli | aquote-router kline 000001 --period 15m --count 10 --json | PASS | 10 | [{"source": "pytdx", "source_level": "primary"}] | a76d1511c0284f518cc0803141dfe582 | cli_ok |
-| cli | aquote-router kline 000001 --period 1d --count 10 --json | PASS | 10 | [{"source": "pytdx", "source_level": "primary"}] | 09fab7f466dc4f2b824a95959d2246b6 | cli_ok |
+| cli | pyqauto diagnose --json | PASS | 0 | [] |  | cli_ok |
+| cli | pyqauto realtime 000001 600000 --json | PASS | 2 | [{"source": "pytdx", "source_level": "primary"}] | ec5d58aa755b4d7b9eeed54b82845803 | cli_ok |
+| cli | pyqauto index 399001 --json | PASS | 1 | [{"source": "pytdx", "source_level": "primary"}] | ae88b619abc249e4871501e1e4aa3901 | cli_ok |
+| cli | pyqauto kline 000001 --period 15m --count 10 --json | PASS | 10 | [{"source": "pytdx", "source_level": "primary"}] | a76d1511c0284f518cc0803141dfe582 | cli_ok |
+| cli | pyqauto kline 000001 --period 1d --count 10 --json | PASS | 10 | [{"source": "pytdx", "source_level": "primary"}] | 09fab7f466dc4f2b824a95959d2246b6 | cli_ok |
 
 ## Notes
 

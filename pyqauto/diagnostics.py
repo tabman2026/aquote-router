@@ -9,9 +9,11 @@ import sys
 from pathlib import Path
 from typing import Any
 
-from aquote_router import __version__
-from aquote_router.exceptions import QuoteRouterError
-from aquote_router.policy import (
+from pyqauto import __version__
+from pyqauto.exceptions import QuoteRouterError
+from pyqauto.policy import (
+    DEFAULT_PYTDX_SERVERS_PATH,
+    DEFAULT_SOURCE_POLICY_PATH,
     SUPPORTED_APIS,
     SUPPORTED_KLINE_PERIODS,
     load_pytdx_servers,
@@ -21,21 +23,21 @@ from aquote_router.policy import (
 
 def build_diagnostics(
     *,
-    source_policy_path: str | Path,
-    pytdx_servers_path: str | Path,
+    source_policy_path: str | Path | None = None,
+    pytdx_servers_path: str | Path | None = None,
     audit_jsonl_path: str | Path | None = None,
     audit_sqlite_path: str | Path | None = None,
 ) -> dict[str, Any]:
     """Build a sanitized local diagnostic payload without provider connections."""
 
-    policy_path = Path(source_policy_path)
-    servers_path = Path(pytdx_servers_path)
+    policy_path = Path(source_policy_path or DEFAULT_SOURCE_POLICY_PATH)
+    servers_path = Path(pytdx_servers_path or DEFAULT_PYTDX_SERVERS_PATH)
     policy_status = _source_policy_status(policy_path)
     servers_status = _pytdx_server_status(servers_path)
     recent_trace_id = _recent_trace_id(audit_jsonl_path, audit_sqlite_path)
 
     return {
-        "aquote_router_version": __version__,
+        "pyqauto_version": __version__,
         "python_version": platform.python_version(),
         "python_executable": _redacted_marker(sys.executable),
         "os": platform.platform(),
@@ -43,10 +45,18 @@ def build_diagnostics(
             "source_policy": {
                 "path": _safe_path(policy_path),
                 "exists": policy_path.exists(),
+                "using_packaged_default": (
+                    not policy_path.exists()
+                    and _is_default_config_path(policy_path, DEFAULT_SOURCE_POLICY_PATH)
+                ),
             },
             "pytdx_servers": {
                 "path": _safe_path(servers_path),
                 "exists": servers_path.exists(),
+                "using_packaged_default": (
+                    not servers_path.exists()
+                    and _is_default_config_path(servers_path, DEFAULT_PYTDX_SERVERS_PATH)
+                ),
             },
         },
         "source_policy_parseable": policy_status["parseable"],
@@ -193,3 +203,7 @@ def _contains_sensitive_word(value: str) -> bool:
     lowered = value.lower()
     blocked_words = ("to" + "ken", "coo" + "kie", "sec" + "ret")
     return any(word in lowered for word in blocked_words)
+
+
+def _is_default_config_path(path: Path, default_path: str) -> bool:
+    return str(path).replace("\\", "/") == default_path

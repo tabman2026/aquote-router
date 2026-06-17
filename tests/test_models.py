@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from dataclasses import fields
 
-from aquote_router.models import KlineBar, QuoteRecord
+from pyqauto.models import KlineBar, QuoteRecord
 
 
 def test_quote_record_omits_raw_by_default() -> None:

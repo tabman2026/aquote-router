@@ -2,13 +2,13 @@
 
 Configure PyPI Trusted Publishing for this project before attempting PyPI publication.
 
-- PyPI project name: `aquote-router`
+- PyPI project name: `pyqauto`
 - GitHub owner: `tabman2026`
-- GitHub repository: `aquote-router`
+- GitHub repository: `pyqauto`
 - Workflow file: `publish.yml`
 - Environment: `pypi`
-- Release tag: `v0.1.0`
+- Release tag: `v0.3.0`
 
 The workflow uses GitHub OIDC Trusted Publishing and does not require storing PyPI credentials in the repository.
 
-Current status: GitHub repository, tag, and release are online. The publish workflow ran and failed with PyPI Trusted Publishing `invalid-publisher`, so actual PyPI publication is pending Trusted Publisher configuration in the PyPI project backend.
+Current status: GitHub repository rename to `tabman2026/pyqauto` is complete. PyPI publication for `pyqauto` 0.3.0 must use GitHub Actions Trusted Publishing with the `pypi` environment.
