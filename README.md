@@ -51,6 +51,13 @@ account login, order execution, screening, timing signals, or performance claims
 - Field mapping template: [docs/FIELD_MAPPING_TEMPLATE.md](docs/FIELD_MAPPING_TEMPLATE.md)
 - Unit rules for adapters: [docs/UNIT_RULES_FOR_ADAPTERS.md](docs/UNIT_RULES_FOR_ADAPTERS.md)
 - When to release: [docs/WHEN_TO_RELEASE.md](docs/WHEN_TO_RELEASE.md)
+- v0.4.0 adapter candidate review entry:
+  [review](docs/ADAPTER_CANDIDATE_REVIEW_V040.md),
+  [field mapping draft](docs/ADAPTER_FIELD_MAPPING_DRAFT_V040.md),
+  [unit rules draft](docs/ADAPTER_UNIT_RULES_DRAFT_V040.md), and
+  [source policy draft](docs/SOURCE_POLICY_DRAFT_V040.md). These are candidate
+  adapter review documents and do not mean the current version supports these
+  data sources.
 
 English start here: [docs/NEW_USER_START_HERE.md](docs/NEW_USER_START_HERE.md)
 
@@ -265,6 +272,10 @@ after pytdx failures, but K-line APIs do not use easyquotation fallback.
 - [Field mapping template](docs/FIELD_MAPPING_TEMPLATE.md)
 - [Unit rules for adapters](docs/UNIT_RULES_FOR_ADAPTERS.md)
 - [When to release](docs/WHEN_TO_RELEASE.md)
+- [v0.4.0 adapter candidate review](docs/ADAPTER_CANDIDATE_REVIEW_V040.md)
+- [v0.4.0 adapter field mapping draft](docs/ADAPTER_FIELD_MAPPING_DRAFT_V040.md)
+- [v0.4.0 adapter unit rules draft](docs/ADAPTER_UNIT_RULES_DRAFT_V040.md)
+- [v0.4.0 source policy draft](docs/SOURCE_POLICY_DRAFT_V040.md)
 - [Maintainer checklist](docs/MAINTAINER_CHECKLIST.md)
 
 ## Audit Trail

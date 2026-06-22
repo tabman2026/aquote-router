@@ -168,3 +168,13 @@ Every new adapter must:
   and source policy review.
 - Do not add a K-line fallback unless the upstream returns compatible period,
   adjustment, timestamp, volume, and amount semantics and passes validation.
+
+v0.4.0 adapter 候选评审入口：
+
+- [ADAPTER_CANDIDATE_REVIEW_V040.md](ADAPTER_CANDIDATE_REVIEW_V040.md)
+- [ADAPTER_FIELD_MAPPING_DRAFT_V040.md](ADAPTER_FIELD_MAPPING_DRAFT_V040.md)
+- [ADAPTER_UNIT_RULES_DRAFT_V040.md](ADAPTER_UNIT_RULES_DRAFT_V040.md)
+- [SOURCE_POLICY_DRAFT_V040.md](SOURCE_POLICY_DRAFT_V040.md)
+
+These are candidate adapter review documents only. They do not mean the current
+version supports efinance, baostock, or mootdx as runtime data sources.

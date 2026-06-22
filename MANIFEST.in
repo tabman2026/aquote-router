@@ -12,6 +12,7 @@ recursive-include docs *.md
 recursive-include examples *.py
 recursive-include scripts *.py *.bat
 recursive-include tests *.py
+recursive-include tests/fixtures *.json
 prune logs
 exclude config/pytdx_servers.active.local.json
 exclude config/pytdx_servers.local.json

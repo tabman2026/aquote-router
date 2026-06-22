@@ -218,6 +218,12 @@ pyqauto probe-pytdx --json --output config/pytdx_servers.active.local.json
 - 字段映射模板：[docs/FIELD_MAPPING_TEMPLATE.md](docs/FIELD_MAPPING_TEMPLATE.md)
 - 单位规则：[docs/UNIT_RULES_FOR_ADAPTERS.md](docs/UNIT_RULES_FOR_ADAPTERS.md)
 - 什么时候发版本：[docs/WHEN_TO_RELEASE.md](docs/WHEN_TO_RELEASE.md)
+- v0.4.0 adapter 候选评审入口：
+  [评审](docs/ADAPTER_CANDIDATE_REVIEW_V040.md)、
+  [字段映射草案](docs/ADAPTER_FIELD_MAPPING_DRAFT_V040.md)、
+  [单位规则草案](docs/ADAPTER_UNIT_RULES_DRAFT_V040.md)、
+  [source policy 草案](docs/SOURCE_POLICY_DRAFT_V040.md)。这些只是候选
+  adapter 评审文档，不代表当前版本已经支持这些数据源。
 
 ## Issue 反馈方式
 

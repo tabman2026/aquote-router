@@ -16,6 +16,13 @@
 ## v0.4.x
 
 - Review optional adapters only when field normalization tests exist.
+- Use the v0.4.0 adapter candidate review entry for efinance, baostock, and
+  mootdx research:
+  [review](ADAPTER_CANDIDATE_REVIEW_V040.md),
+  [field mapping draft](ADAPTER_FIELD_MAPPING_DRAFT_V040.md),
+  [unit rules draft](ADAPTER_UNIT_RULES_DRAFT_V040.md), and
+  [source policy draft](SOURCE_POLICY_DRAFT_V040.md). These documents do not
+  mean the current version supports those data sources.
 - Improve packaging and release verification.
 
 ## v1.0.0

@@ -43,6 +43,20 @@ failure reason, and `trace_id`.
 `trace_id` is the request identifier used to connect returned records with
 audit entries.
 
+## v0.4.0 Adapter Candidate Review Entry
+
+The v0.4.0 candidate review documents are research entry points, not current
+support statements:
+
+- [ADAPTER_CANDIDATE_REVIEW_V040.md](ADAPTER_CANDIDATE_REVIEW_V040.md)
+- [ADAPTER_FIELD_MAPPING_DRAFT_V040.md](ADAPTER_FIELD_MAPPING_DRAFT_V040.md)
+- [ADAPTER_UNIT_RULES_DRAFT_V040.md](ADAPTER_UNIT_RULES_DRAFT_V040.md)
+- [SOURCE_POLICY_DRAFT_V040.md](SOURCE_POLICY_DRAFT_V040.md)
+
+They describe candidate adapter admission work for efinance, baostock, and
+mootdx. They do not mean the current version supports these data sources, and
+they do not add candidates to the default fallback chain.
+
 ## Why Raw Output Is Not Public Output
 
 Never return upstream raw data directly to users. Upstream libraries do not use
@@ -159,4 +173,3 @@ Do not describe planned work as already supported.
 
 Do not release a package version for docs-only local work unless the PyPI page
 must show the change. Release rules are in `docs/WHEN_TO_RELEASE.md`.
-
