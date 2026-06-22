@@ -210,6 +210,15 @@ pyqauto probe-pytdx --json --output config/pytdx_servers.active.local.json
 - 错误码：[docs/ERROR_CODES.md](docs/ERROR_CODES.md)
 - Issue 反馈指南：[docs/ISSUE_GUIDE.md](docs/ISSUE_GUIDE.md)
 
+## 开发者入口
+
+- 新手开发指南：[docs/BEGINNER_DEVELOPER_GUIDE.md](docs/BEGINNER_DEVELOPER_GUIDE.md)
+- 上游共性研究：[docs/UPSTREAM_COMMONS_RESEARCH.md](docs/UPSTREAM_COMMONS_RESEARCH.md)
+- Adapter 模板：[docs/ADAPTER_TEMPLATE.md](docs/ADAPTER_TEMPLATE.md)
+- 字段映射模板：[docs/FIELD_MAPPING_TEMPLATE.md](docs/FIELD_MAPPING_TEMPLATE.md)
+- 单位规则：[docs/UNIT_RULES_FOR_ADAPTERS.md](docs/UNIT_RULES_FOR_ADAPTERS.md)
+- 什么时候发版本：[docs/WHEN_TO_RELEASE.md](docs/WHEN_TO_RELEASE.md)
+
 ## Issue 反馈方式
 
 提交 issue 前请先运行：

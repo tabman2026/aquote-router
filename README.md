@@ -43,6 +43,15 @@ account login, order execution, screening, timing signals, or performance claims
 - 数据源说明：[docs/DATA_SOURCES.md](docs/DATA_SOURCES.md)
 - 常见问题排查：[docs/TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md)
 
+## Developer Entry
+
+- Beginner developer guide: [docs/BEGINNER_DEVELOPER_GUIDE.md](docs/BEGINNER_DEVELOPER_GUIDE.md)
+- Upstream commons research: [docs/UPSTREAM_COMMONS_RESEARCH.md](docs/UPSTREAM_COMMONS_RESEARCH.md)
+- Adapter template: [docs/ADAPTER_TEMPLATE.md](docs/ADAPTER_TEMPLATE.md)
+- Field mapping template: [docs/FIELD_MAPPING_TEMPLATE.md](docs/FIELD_MAPPING_TEMPLATE.md)
+- Unit rules for adapters: [docs/UNIT_RULES_FOR_ADAPTERS.md](docs/UNIT_RULES_FOR_ADAPTERS.md)
+- When to release: [docs/WHEN_TO_RELEASE.md](docs/WHEN_TO_RELEASE.md)
+
 English start here: [docs/NEW_USER_START_HERE.md](docs/NEW_USER_START_HERE.md)
 
 Data source policy: [docs/DATA_SOURCES.md](docs/DATA_SOURCES.md)
@@ -250,6 +259,12 @@ after pytdx failures, but K-line APIs do not use easyquotation fallback.
 - [Upstream license and risk](docs/UPSTREAM_LICENSE_AND_RISK.md)
 - [Roadmap](docs/ROADMAP.md)
 - [Contributor adapter guide](docs/CONTRIBUTOR_ADAPTER_GUIDE.md)
+- [Beginner developer guide](docs/BEGINNER_DEVELOPER_GUIDE.md)
+- [Upstream commons research](docs/UPSTREAM_COMMONS_RESEARCH.md)
+- [Adapter template](docs/ADAPTER_TEMPLATE.md)
+- [Field mapping template](docs/FIELD_MAPPING_TEMPLATE.md)
+- [Unit rules for adapters](docs/UNIT_RULES_FOR_ADAPTERS.md)
+- [When to release](docs/WHEN_TO_RELEASE.md)
 - [Maintainer checklist](docs/MAINTAINER_CHECKLIST.md)
 
 ## Audit Trail
